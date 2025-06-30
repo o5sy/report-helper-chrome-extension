@@ -1,0 +1,104 @@
+name: PR Auto Labeler
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize]
+
+jobs:
+  label-pr:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Auto label PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const title = pr.title.toLowerCase();
+            const body = pr.body ? pr.body.toLowerCase() : '';
+            const labels = [];
+
+            // 제목과 본문을 기반으로 한 라벨 추가
+            if (title.includes('[feature]') || title.includes('feat:') || title.includes('feature:')) {
+              labels.push('feature');
+            } else if (title.includes('[bugfix]') || title.includes('[bug]') || title.includes('fix:') || title.includes('bugfix:')) {
+              labels.push('bugfix');
+            } else if (title.includes('[hotfix]') || title.includes('hotfix:')) {
+              labels.push('hotfix');
+            } else if (title.includes('[refactor]') || title.includes('refactor:')) {
+              labels.push('refactor');
+            } else if (title.includes('[docs]') || title.includes('docs:')) {
+              labels.push('docs');
+            } else if (title.includes('[test]') || title.includes('test:')) {
+              labels.push('test');
+            } else if (title.includes('[chore]') || title.includes('chore:')) {
+              labels.push('chore');
+            }
+
+            // 우선순위 라벨
+            if (title.includes('urgent') || title.includes('critical') || body.includes('urgent') || body.includes('critical')) {
+              labels.push('priority/high');
+            } else if (title.includes('minor') || body.includes('minor')) {
+              labels.push('priority/low');
+            } else {
+              labels.push('priority/medium');
+            }
+
+            // 파일 변경사항을 기반으로 한 컴포넌트 라벨
+            const { data: files } = await github.rest.pulls.listFiles({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: pr.number
+            });
+
+            const changedFiles = files.map(file => file.filename);
+
+            if (changedFiles.some(file => file.includes('content-script') || file.includes('content_script'))) {
+              labels.push('component/content-script');
+            }
+            if (changedFiles.some(file => file.includes('popup'))) {
+              labels.push('component/popup');
+            }
+            if (changedFiles.some(file => file.includes('background'))) {
+              labels.push('component/background');
+            }
+            if (changedFiles.some(file => file.includes('api') || file.includes('service'))) {
+              labels.push('component/api');
+            }
+            if (changedFiles.some(file => file.includes('ui') || file.includes('component') || file.includes('.tsx') || file.includes('.jsx'))) {
+              labels.push('component/ui');
+            }
+
+            // 크기 라벨
+            const totalChanges = files.reduce((sum, file) => sum + file.additions + file.deletions, 0);
+            if (totalChanges < 10) {
+              labels.push('size/XS');
+            } else if (totalChanges < 30) {
+              labels.push('size/S');
+            } else if (totalChanges < 100) {
+              labels.push('size/M');
+            } else if (totalChanges < 500) {
+              labels.push('size/L');
+            } else {
+              labels.push('size/XL');
+            }
+
+            // 상태 라벨
+            if (pr.draft) {
+              labels.push('status/in-progress');
+            } else {
+              labels.push('status/ready-for-review');
+            }
+
+            // 라벨 적용
+            if (labels.length > 0) {
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: pr.number,
+                labels: labels
+              });
+            }

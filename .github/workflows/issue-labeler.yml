@@ -1,0 +1,126 @@
+name: Issue Auto Labeler
+
+on:
+  issues:
+    types: [opened, edited]
+
+jobs:
+  label-issue:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Auto label issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = context.payload.issue;
+            const title = issue.title.toLowerCase();
+            const body = issue.body ? issue.body.toLowerCase() : '';
+            const labels = [];
+
+            // 이슈 타입 분류
+            if (title.includes('bug') || title.includes('error') || title.includes('문제') || 
+                title.includes('오류') || body.includes('버그') || body.includes('에러')) {
+              labels.push('bug');
+            } else if (title.includes('feature') || title.includes('기능') || title.includes('추가') ||
+                       title.includes('개선') || body.includes('기능') || body.includes('feature')) {
+              if (title.includes('개선') || body.includes('개선') || body.includes('향상')) {
+                labels.push('enhancement');
+              } else {
+                labels.push('feature-request');
+              }
+            } else if (title.includes('question') || title.includes('질문') || title.includes('문의') ||
+                       title.includes('how to') || title.includes('어떻게')) {
+              labels.push('question');
+            } else if (title.includes('docs') || title.includes('문서') || title.includes('documentation')) {
+              labels.push('documentation');
+            }
+
+            // 우선순위 분류
+            if (title.includes('urgent') || title.includes('critical') || title.includes('긴급') ||
+                title.includes('치명적') || body.includes('urgent') || body.includes('critical')) {
+              labels.push('priority/critical');
+            } else if (title.includes('important') || title.includes('중요') || 
+                       body.includes('important') || body.includes('중요')) {
+              labels.push('priority/high');
+            } else if (title.includes('minor') || title.includes('작은') || 
+                       body.includes('minor') || body.includes('작은')) {
+              labels.push('priority/low');
+            } else {
+              labels.push('priority/medium');
+            }
+
+            // 컴포넌트 분류 (본문 내용 기반)
+            if (body.includes('content script') || body.includes('콘텐츠 스크립트') ||
+                body.includes('content-script') || body.includes('google sheets')) {
+              labels.push('component/content-script');
+            }
+            if (body.includes('popup') || body.includes('팝업') || body.includes('ui') ||
+                body.includes('interface') || body.includes('인터페이스')) {
+              labels.push('component/popup');
+            }
+            if (body.includes('background') || body.includes('백그라운드') ||
+                body.includes('service worker')) {
+              labels.push('component/background');
+            }
+            if (body.includes('api') || body.includes('gemini') || body.includes('gmail') ||
+                body.includes('google sheets api')) {
+              labels.push('component/api');
+            }
+
+            // 특별한 키워드 기반 라벨
+            if (body.includes('security') || body.includes('보안') || 
+                body.includes('vulnerability') || body.includes('취약점')) {
+              labels.push('security');
+            }
+            if (body.includes('performance') || body.includes('성능') || 
+                body.includes('slow') || body.includes('느린')) {
+              labels.push('performance');
+            }
+            if (body.includes('accessibility') || body.includes('접근성') || 
+                body.includes('a11y')) {
+              labels.push('accessibility');
+            }
+
+            // 기본 상태 라벨
+            labels.push('status/triage');
+
+            // 중복 제거
+            const uniqueLabels = [...new Set(labels)];
+
+            // 라벨 적용
+            if (uniqueLabels.length > 0) {
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                labels: uniqueLabels
+              });
+              
+              // 라벨링 완료 댓글
+              const labelList = uniqueLabels.map(l => `\`${l}\``).join(', ');
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                body: `🏷️ **자동 라벨링**: 다음 라벨들이 자동으로 할당되었습니다: ${labelList}`
+              });
+            }
+
+            // 버그 리포트인 경우 추가 가이드
+            if (labels.includes('bug')) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                body: `🐛 **버그 리포트 가이드**: 
+                
+                빠른 해결을 위해 다음 정보를 추가로 제공해주시면 도움이 됩니다:
+                - Chrome 브라우저 버전
+                - 운영체제 (Windows/Mac/Linux)
+                - 재현 단계 (단계별로 상세히)
+                - 예상 결과 vs 실제 결과
+                - 스크린샷 (가능한 경우)
+                - 브라우저 콘솔 에러 메시지 (F12 > Console 탭)`
+              });
+            }

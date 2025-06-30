@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="400" height="500" xmlns="http://www.w3.org/2000/svg">
+    <!-- Background -->
+    <rect x="0" y="0" width="400" height="500" fill="#ffffff" stroke="#e0e0e0" stroke-width="2" />
+
+    <!-- Header -->
+    <rect x="0" y="0" width="400" height="60" fill="#4285f4" />
+    <text x="20" y="35" fill="white" font-family="Arial" font-size="16" font-weight="bold">설정</text>
+
+    <!-- Back Button -->
+    <rect x="350" y="20" width="30" height="20" fill="rgba(255,255,255,0.3)" rx="2" />
+    <text x="362" y="33" fill="white" font-family="Arial" font-size="12">←</text>
+
+    <!-- API 설정 Section -->
+    <rect x="20" y="80" width="360" height="120" fill="#f8f9fa" stroke="#e0e0e0" stroke-width="1" rx="4" />
+    <text x="30" y="105" fill="#333" font-family="Arial" font-size="14" font-weight="bold">API 설정</text>
+
+    <!-- Gemini API Key -->
+    <text x="30" y="125" fill="#666" font-family="Arial" font-size="12">Gemini API 키</text>
+    <rect x="30" y="130" width="250" height="25" fill="white" stroke="#e0e0e0" stroke-width="1" rx="2" />
+    <text x="35" y="147" fill="#999" font-family="Arial" font-size="11">••••••••••••••••••••••••</text>
+    <rect x="290" y="130" width="80" height="25" fill="#4285f4" stroke="#4285f4" stroke-width="1" rx="2" />
+    <text x="320" y="147" fill="white" font-family="Arial" font-size="10">변경</text>
+
+    <!-- Google API 인증 -->
+    <text x="30" y="175" fill="#666" font-family="Arial" font-size="12">Google API 인증</text>
+    <rect x="30" y="180" width="150" height="25" fill="#34a853" stroke="#34a853" stroke-width="1" rx="2" />
+    <text x="85" y="197" fill="white" font-family="Arial" font-size="10">연결됨</text>
+    <rect x="190" y="180" width="80" height="25" fill="#f8f9fa" stroke="#e0e0e0" stroke-width="1" rx="2" />
+    <text x="220" y="197" fill="#666" font-family="Arial" font-size="10">재인증</text>
+
+    <!-- 개인화 설정 Section -->
+    <rect x="20" y="220" width="360" height="160" fill="#f8f9fa" stroke="#e0e0e0" stroke-width="1" rx="4" />
+    <text x="30" y="245" fill="#333" font-family="Arial" font-size="14" font-weight="bold">개인화 설정</text>
+
+    <!-- 피드백 톤 -->
+    <text x="30" y="265" fill="#666" font-family="Arial" font-size="12">피드백 톤</text>
+    <rect x="30" y="270" width="340" height="25" fill="white" stroke="#e0e0e0" stroke-width="1" rx="2" />
+    <text x="35" y="287" fill="#333" font-family="Arial" font-size="11">친근하고 격려적인</text>
+    <text x="350" y="287" fill="#666" font-family="Arial" font-size="11">▼</text>
+
+    <!-- 이메일 템플릿 -->
+    <text x="30" y="310" fill="#666" font-family="Arial" font-size="12">이메일 템플릿</text>
+    <rect x="30" y="315" width="340" height="50" fill="white" stroke="#e0e0e0" stroke-width="1" rx="2" />
+    <text x="35" y="332" fill="#333" font-family="Arial" font-size="10">안녕하세요, {이름}님!</text>
+    <text x="35" y="345" fill="#333" font-family="Arial" font-size="10">모의면접 리포트를 첨부하여 보내드립니다...</text>
+    <text x="35" y="358" fill="#999" font-family="Arial" font-size="10">클릭하여 편집</text>
+
+    <!-- 자동화 옵션 Section -->
+    <rect x="20" y="400" width="360" height="80" fill="#f8f9fa" stroke="#e0e0e0" stroke-width="1" rx="4" />
+    <text x="30" y="425" fill="#333" font-family="Arial" font-size="14" font-weight="bold">자동화 옵션</text>
+
+    <!-- 자동 실행 옵션들 -->
+    <rect x="30" y="435" width="15" height="15" fill="#4285f4" stroke="#4285f4" stroke-width="1" rx="2" />
+    <text x="35" y="446" fill="white" font-family="Arial" font-size="10">✓</text>
+    <text x="55" y="447" fill="#666" font-family="Arial" font-size="11">답변 정리 후 피드백 자동 생성</text>
+
+    <rect x="30" y="455" width="15" height="15" fill="white" stroke="#e0e0e0" stroke-width="1" rx="2" />
+    <text x="55" y="467" fill="#666" font-family="Arial" font-size="11">피드백 생성 후 이메일 자동 준비</text>
+</svg>
