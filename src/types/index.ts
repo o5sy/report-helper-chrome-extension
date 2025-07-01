@@ -9,7 +9,7 @@ export interface ReportGenerationMessage {
 export interface ReportGenerationResponse {
   success: boolean;
   message: string;
-  data?: any;
+  data?: unknown;
 }
 
 export type ExtensionMessage = ReportGenerationMessage;
@@ -18,4 +18,26 @@ export interface TabInfo {
   id?: number;
   url?: string;
   title?: string;
+}
+
+// Chrome Storage 관련 타입 정의
+export interface StorageData {
+  settings?: ExtensionSettings;
+  userPreferences?: UserPreferences;
+}
+
+export interface ExtensionSettings {
+  autoGenerate: boolean;
+  reportFormat: "markdown" | "pdf" | "html";
+  maxReportLength: number;
+}
+
+export interface UserPreferences {
+  theme: "light" | "dark" | "auto";
+  language: string;
+}
+
+export interface StorageError {
+  code: "QUOTA_EXCEEDED" | "STORAGE_DISABLED" | "UNKNOWN_ERROR";
+  message: string;
 }
