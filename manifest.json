@@ -1,9 +1,9 @@
 {
   "manifest_version": 3,
   "name": "Report Generator",
-  "version": "1.0.0",
   "description": "Generate comprehensive reports from web content",
-  "icons": {
+  "version": "1.0.0",
+  "icon": {
     "16": "icons/icon-16.png",
     "32": "icons/icon-32.png",
     "48": "icons/icon-48.png",
@@ -19,21 +19,18 @@
     }
   },
   "background": {
-    "service_worker": "src/background/index.ts"
+    "service_worker": "src/background/index.js"
   },
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["src/content/index.ts"],
-      "css": ["src/styles/content.css"]
+      "js": ["src/content/index.js"]
     }
   ],
-  "permissions": ["activeTab", "storage", "scripting"],
+  "permissions": ["identity", "storage"],
   "host_permissions": ["http://*/*", "https://*/*"],
-  "web_accessible_resources": [
-    {
-      "resources": ["src/styles/*"],
-      "matches": ["<all_urls>"]
-    }
-  ]
+  "oauth2": {
+    "client_id": "459670883381-hp10s58i52nhla3siuc5gsqkpat86rgb.apps.googleusercontent.com",
+    "scopes": ["https://www.googleapis.com/auth/spreadsheets"]
+  }
 }

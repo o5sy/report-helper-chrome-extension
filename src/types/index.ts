@@ -41,3 +41,18 @@ export interface StorageError {
   code: "QUOTA_EXCEEDED" | "STORAGE_DISABLED" | "UNKNOWN_ERROR";
   message: string;
 }
+
+// Google Sheets Integration Types
+export interface GoogleSheetsConfig {
+  spreadsheetId: string;
+  sheetName: string;
+  range: string;
+}
+
+export interface ReportEntry {
+  date: string;
+  url: string;
+  title: string;
+  content: string;
+  timestamp?: number;
+}

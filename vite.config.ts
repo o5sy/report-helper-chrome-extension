@@ -7,18 +7,14 @@ export default defineConfig({
   plugins: [
     react(),
     webExtension({
-      browser: process.env.TARGET || "chrome",
-      webExtConfig: {
-        startUrl: ["https://example.com"],
-      },
+      manifest: "manifest.json",
+      assets: "public",
+      browser: "chrome",
     }),
   ],
   resolve: {
     alias: {
       "@": resolve(__dirname, "./src"),
     },
-  },
-  define: {
-    __BROWSER__: JSON.stringify(process.env.TARGET || "chrome"),
   },
 });

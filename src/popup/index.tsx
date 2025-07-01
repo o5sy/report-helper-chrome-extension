@@ -1,7 +1,6 @@
 import "../styles/globals.css";
 
 import { Popup } from "./Popup";
-import React from "react";
 import { createRoot } from "react-dom/client";
 
 const container = document.getElementById("root");
