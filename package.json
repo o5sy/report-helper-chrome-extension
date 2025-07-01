@@ -1,0 +1,47 @@
+{
+  "name": "report-helper-extension",
+  "version": "1.0.0",
+  "description": "Chrome Extension for generating reports from web content",
+  "type": "module",
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "lint:fix": "eslint . --ext ts,tsx --fix",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "webextension-polyfill": "^0.12.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@types/webextension-polyfill": "^0.12.1",
+    "@types/node": "^22.9.1",
+    "@types/chrome": "^0.0.277",
+    "@typescript-eslint/eslint-plugin": "^8.15.0",
+    "@typescript-eslint/parser": "^8.15.0",
+    "@eslint/js": "^9.15.0",
+    "globals": "^15.12.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^9.15.0",
+    "eslint-plugin-react-hooks": "^5.0.0",
+    "eslint-plugin-react-refresh": "^0.4.14",
+    "postcss": "^8.5.1",
+    "tailwindcss": "^3.4.14",
+    "typescript": "^5.6.3",
+    "vite": "^6.0.1",
+    "vite-plugin-web-extension": "^4.1.6",
+    "vitest": "^2.1.4",
+    "@vitest/ui": "^2.1.4",
+    "jsdom": "^25.0.1",
+    "@testing-library/react": "^16.0.1",
+    "@testing-library/jest-dom": "^6.6.3"
+  },
+  "license": "MIT"
+}
