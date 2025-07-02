@@ -1,9 +1,9 @@
 interface GeminiApiKeyInputProps {
-  key: string;
+  apiKey: string;
   onChange: (value: string) => void;
 }
 
-function GeminiApiKeyInput({ key, onChange }: GeminiApiKeyInputProps) {
+function GeminiApiKeyInput({ apiKey, onChange }: GeminiApiKeyInputProps) {
   return (
     <div className="mb-4 border-t pt-4">
       <p className="text-sm font-medium mb-2">Gemini API 설정:</p>
@@ -11,7 +11,7 @@ function GeminiApiKeyInput({ key, onChange }: GeminiApiKeyInputProps) {
         type="password"
         className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm mb-2"
         placeholder="Gemini API 키를 입력하세요"
-        value={key}
+        value={apiKey}
         onChange={(e) => onChange(e.target.value)}
       />
       <p className="text-xs text-gray-500 mb-3">

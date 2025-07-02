@@ -15,7 +15,7 @@ export const Popup: React.FC = () => {
       <h1 className="text-xl font-bold mb-4">Report Generator</h1>
 
       {/* gemini api key input */}
-      <GeminiApiKeyInput key={geminiApiKey} onChange={changeGeminiApiKey} />
+      <GeminiApiKeyInput apiKey={geminiApiKey} onChange={changeGeminiApiKey} />
 
       {/* tab */}
       <div className="flex justify-center mb-4">

@@ -50,7 +50,7 @@ export class GeminiClient {
         },
       });
 
-      const processedText = response.text || "";
+      const processedText = response.text?.trim() || "";
       const tokensUsed = response.usageMetadata?.totalTokenCount || 0;
       const processingTime = Date.now() - startTime;
 
@@ -84,7 +84,8 @@ export class GeminiClient {
 
     switch (type) {
       case "refine":
-        return this.buildRefinePrompt(text, context);
+        // return this.buildRefinePrompt(text, context);
+        return `${context}\n\n---\n\n${text}`;
       case "feedback":
         return this.buildFeedbackPrompt(text, context);
       default:
