@@ -13,6 +13,8 @@ export class MessageHandler {
           return await this.handleGetSettings(message, sender);
         case "REPORT_GENERATED":
           return await this.handleReportGenerated(message, sender);
+        case "SHEET_INFO_DETECTED":
+          return await this.handleSheetInfoDetected(message, sender);
         default:
           return {
             success: false,
@@ -68,6 +70,21 @@ export class MessageHandler {
       success: true,
       type: "REPORT_GENERATED_RESPONSE",
       data: message.payload,
+    };
+  }
+
+  private async handleSheetInfoDetected(
+    message: ExtensionMessage & { type: "SHEET_INFO_DETECTED" },
+    sender: chrome.runtime.MessageSender
+  ): Promise<MessageResponse> {
+    // Content Script에서 전송된 Google Sheets 정보 처리
+    console.log("Sheet info detected:", message.data);
+
+    // 현재는 단순히 로그만 출력하고 성공 응답 반환 (MVP)
+    return {
+      success: true,
+      type: "SHEET_INFO_DETECTED_RESPONSE",
+      data: message.data,
     };
   }
 

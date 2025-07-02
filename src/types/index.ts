@@ -26,6 +26,15 @@ export interface ReportGeneratedMessage {
   };
 }
 
+export interface SheetInfoDetectedMessage {
+  type: "SHEET_INFO_DETECTED";
+  data: {
+    spreadsheetId: string | null;
+    sheetName: string;
+    url: string;
+  };
+}
+
 export interface MessageResponse {
   success: boolean;
   type: string;
@@ -36,7 +45,8 @@ export interface MessageResponse {
 export type ExtensionMessage =
   | ReportGenerationMessage
   | GetSettingsMessage
-  | ReportGeneratedMessage;
+  | ReportGeneratedMessage
+  | SheetInfoDetectedMessage;
 
 export interface TabInfo {
   id?: number;

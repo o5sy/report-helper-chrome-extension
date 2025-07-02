@@ -23,8 +23,9 @@
   },
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
-      "js": ["src/content/index.js"]
+      "matches": ["https://docs.google.com/spreadsheets/*"],
+      "js": ["src/content/index.js"],
+      "run_at": "document_idle"
     }
   ],
   "permissions": ["identity", "storage"],
