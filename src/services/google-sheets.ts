@@ -195,10 +195,7 @@ export class GoogleSheetsService {
             Authorization: `Bearer ${authResult.token}`,
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            values,
-            valueInputOption: "RAW",
-          }),
+          body: JSON.stringify({ values }),
         }
       );
 
