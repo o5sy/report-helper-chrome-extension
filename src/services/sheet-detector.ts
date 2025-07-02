@@ -1,9 +1,3 @@
-// Chrome extension message interface
-interface ChromeMessage {
-  type: string;
-  data: SheetInfo;
-}
-
 export interface SheetInfo {
   spreadsheetId: string | null;
   sheetName: string;

@@ -171,4 +171,56 @@ export class GoogleSheetsService {
       };
     }
   }
+
+  async updateRange(
+    spreadsheetId: string,
+    range: string,
+    values: string[][]
+  ): Promise<ApiResult<AppendResult>> {
+    const authResult = await this.authService.getAccessToken();
+    if (!authResult.success) {
+      return {
+        success: false,
+        error: `Authentication failed: ${authResult.error}`,
+      };
+    }
+
+    try {
+      const encodedRange = encodeURIComponent(range);
+      const response = await fetch(
+        `${this.baseUrl}/${spreadsheetId}/values/${encodedRange}?valueInputOption=RAW`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${authResult.token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            values,
+            valueInputOption: "RAW",
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        return {
+          success: false,
+          error: `API request failed: ${response.status} ${response.statusText}`,
+        };
+      }
+
+      const data = await response.json();
+      return {
+        success: true,
+        data,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: `Request failed: ${
+          error instanceof Error ? error.message : String(error)
+        }`,
+      };
+    }
+  }
 }

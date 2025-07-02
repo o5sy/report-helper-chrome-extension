@@ -57,6 +57,10 @@ export type {
 } from "./sheets-integration";
 
 // Export classes for direct use if needed
+export { GeminiClient } from "./gemini-client";
 export { GoogleAuthService } from "./google-auth";
 export { GoogleSheetsService } from "./google-sheets";
+export { PromptTemplateManager } from "./prompt-templates";
+export { ResponseParser } from "./response-parser";
 export { SheetsIntegrationService } from "./sheets-integration";
+export { AnswerRefiner } from "./answer-refiner";

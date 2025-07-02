@@ -35,6 +35,16 @@ export interface SheetInfoDetectedMessage {
   };
 }
 
+export interface RefineAnswersMessage {
+  type: "REFINE_ANSWERS";
+  payload: {
+    spreadsheetId: string;
+    sourceRange: string;
+    targetRange: string;
+    customPrompt?: string;
+  };
+}
+
 export interface MessageResponse {
   success: boolean;
   type: string;
@@ -46,7 +56,8 @@ export type ExtensionMessage =
   | ReportGenerationMessage
   | GetSettingsMessage
   | ReportGeneratedMessage
-  | SheetInfoDetectedMessage;
+  | SheetInfoDetectedMessage
+  | RefineAnswersMessage;
 
 export interface TabInfo {
   id?: number;
@@ -220,4 +231,39 @@ export interface StorageResult {
   success: boolean;
   error?: string;
   data?: unknown;
+}
+
+// Answer Refinement Types
+export interface AnswerData {
+  originalAnswer: string;
+  refinedAnswer: string;
+  needsRefinement: boolean;
+  rowIndex: number;
+}
+
+export interface RefinementResult {
+  success: boolean;
+  refinedText?: string;
+  error?: string;
+}
+
+export interface WriteResult {
+  success: boolean;
+  updatedCount?: number;
+  error?: string;
+}
+
+export interface BatchRefinementOptions {
+  spreadsheetId: string;
+  sourceRange: string;
+  targetRange: string;
+  customPrompt?: string;
+}
+
+export interface BatchRefinementResult {
+  success: boolean;
+  processedCount: number;
+  successCount: number;
+  errorCount: number;
+  errors?: string[];
 }

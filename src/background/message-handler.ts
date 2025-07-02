@@ -1,6 +1,14 @@
 import type { ExtensionMessage, MessageResponse } from "../types";
 
+import { ApiOrchestrator } from "./api-orchestrator";
+
 export class MessageHandler {
+  private apiOrchestrator: ApiOrchestrator;
+
+  constructor() {
+    this.apiOrchestrator = new ApiOrchestrator();
+  }
+
   async handleMessage(
     message: ExtensionMessage,
     sender: chrome.runtime.MessageSender
@@ -15,6 +23,8 @@ export class MessageHandler {
           return await this.handleReportGenerated(message, sender);
         case "SHEET_INFO_DETECTED":
           return await this.handleSheetInfoDetected(message, sender);
+        case "REFINE_ANSWERS":
+          return await this.handleRefineAnswers(message, sender);
         default:
           return {
             success: false,
@@ -86,6 +96,33 @@ export class MessageHandler {
       type: "SHEET_INFO_DETECTED_RESPONSE",
       data: message.data,
     };
+  }
+
+  private async handleRefineAnswers(
+    message: ExtensionMessage & { type: "REFINE_ANSWERS" },
+    sender: chrome.runtime.MessageSender
+  ): Promise<MessageResponse> {
+    try {
+      const result = await this.apiOrchestrator.refineAnswers({
+        spreadsheetId: message.payload.spreadsheetId,
+        sourceRange: message.payload.sourceRange,
+        targetRange: message.payload.targetRange,
+        customPrompt: message.payload.customPrompt,
+      });
+
+      return {
+        success: result.success,
+        type: "REFINE_ANSWERS_RESPONSE",
+        data: result,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        type: "REFINE_ANSWERS_RESPONSE",
+        error:
+          error instanceof Error ? error.message : "Unknown error occurred",
+      };
+    }
   }
 
   async sendMessageToTab(

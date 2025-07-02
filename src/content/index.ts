@@ -1,4 +1,4 @@
-import { SheetDetector } from "./sheet-detector";
+import { SheetDetector } from "@/services/sheet-detector";
 
 /**
  * Content Script 메인 진입점

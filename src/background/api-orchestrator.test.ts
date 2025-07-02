@@ -2,19 +2,39 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { ApiOrchestrator } from "./api-orchestrator";
 
+// Mock the services
+vi.mock("../services/answer-refiner", () => ({
+  AnswerRefiner: vi.fn().mockImplementation(() => ({
+    processBatchRefinement: vi.fn(),
+  })),
+}));
+
+vi.mock("../services/gemini-client", () => ({
+  GeminiClient: vi.fn(),
+}));
+
+vi.mock("../services/google-sheets", () => ({
+  GoogleSheetsService: vi.fn(),
+}));
+
+vi.mock("../services/google-auth", () => ({
+  GoogleAuthService: vi.fn(),
+}));
+
 describe("ApiOrchestrator", () => {
   let apiOrchestrator: ApiOrchestrator;
 
   beforeEach(() => {
-    apiOrchestrator = new ApiOrchestrator();
     vi.clearAllMocks();
+    apiOrchestrator = new ApiOrchestrator();
   });
 
   describe("processReportRequest", () => {
-    it("should process report request successfully", async () => {
+    it("should process a valid report request", async () => {
       const request = {
         url: "https://example.com",
-        content: "test content",
+        content: "Test content",
+        title: "Test Report",
       };
 
       const result = await apiOrchestrator.processReportRequest(request);
@@ -23,7 +43,7 @@ describe("ApiOrchestrator", () => {
       expect(result.data).toBeDefined();
     });
 
-    it("should handle API errors gracefully", async () => {
+    it("should fail with invalid input", async () => {
       const request = {
         url: "",
         content: "",
@@ -32,16 +52,17 @@ describe("ApiOrchestrator", () => {
       const result = await apiOrchestrator.processReportRequest(request);
 
       expect(result.success).toBe(false);
-      expect(result.error).toBeDefined();
+      expect(result.error).toContain("URL and content are required");
     });
   });
 
   describe("syncToSheets", () => {
-    it("should sync data to Google Sheets", async () => {
+    it("should sync data to sheets", async () => {
       const data = {
-        reportId: "test-123",
+        reportId: "test-id",
         url: "https://example.com",
-        content: "processed content",
+        content: "test content",
+        timestamp: Date.now(),
       };
 
       const result = await apiOrchestrator.syncToSheets(data);

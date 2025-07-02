@@ -1,4 +1,13 @@
-import type { StorageResult } from "../types";
+import type {
+  BatchRefinementOptions,
+  BatchRefinementResult,
+  StorageResult,
+} from "../types";
+
+import { AnswerRefiner } from "../services/answer-refiner";
+import { GeminiClient } from "../services/gemini-client";
+import { GoogleAuthService } from "../services/google-auth";
+import { GoogleSheetsService } from "../services/google-sheets";
 
 export interface ReportRequest {
   url: string;
@@ -15,6 +24,8 @@ export interface ProcessedReport {
 }
 
 export class ApiOrchestrator {
+  private answerRefiner?: AnswerRefiner;
+
   async processReportRequest(request: ReportRequest): Promise<StorageResult> {
     try {
       // Validate input
@@ -89,6 +100,55 @@ export class ApiOrchestrator {
         success: false,
         error: error instanceof Error ? error.message : "Workflow failed",
       };
+    }
+  }
+
+  async refineAnswers(
+    options: BatchRefinementOptions
+  ): Promise<BatchRefinementResult> {
+    try {
+      if (!this.answerRefiner) {
+        // Initialize services if not already done
+        const geminiApiKey = await this.getGeminiApiKey();
+        if (!geminiApiKey) {
+          return {
+            success: false,
+            processedCount: 0,
+            successCount: 0,
+            errorCount: 1,
+            errors: ["Gemini API key not configured"],
+          };
+        }
+
+        const geminiClient = new GeminiClient({ apiKey: geminiApiKey });
+        const authService = new GoogleAuthService();
+        const sheetsService = new GoogleSheetsService(authService);
+
+        this.answerRefiner = new AnswerRefiner(geminiClient, sheetsService);
+      }
+
+      return await this.answerRefiner.processBatchRefinement(options);
+    } catch (error) {
+      return {
+        success: false,
+        processedCount: 0,
+        successCount: 0,
+        errorCount: 1,
+        errors: [
+          error instanceof Error ? error.message : "Unknown error occurred",
+        ],
+      };
+    }
+  }
+
+  private async getGeminiApiKey(): Promise<string | null> {
+    try {
+      // Get API key from Chrome storage
+      const result = await chrome.storage.sync.get(["geminiApiKey"]);
+      return result.geminiApiKey || null;
+    } catch (error) {
+      console.error("Failed to get Gemini API key:", error);
+      return null;
     }
   }
 
