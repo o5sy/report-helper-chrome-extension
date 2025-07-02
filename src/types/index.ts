@@ -12,7 +12,31 @@ export interface ReportGenerationResponse {
   data?: unknown;
 }
 
-export type ExtensionMessage = ReportGenerationMessage;
+export interface GetSettingsMessage {
+  type: "GET_SETTINGS";
+  payload: Record<string, unknown>;
+}
+
+export interface ReportGeneratedMessage {
+  type: "REPORT_GENERATED";
+  payload: {
+    reportId: string;
+    url?: string;
+    status?: string;
+  };
+}
+
+export interface MessageResponse {
+  success: boolean;
+  type: string;
+  data?: unknown;
+  error?: string;
+}
+
+export type ExtensionMessage =
+  | ReportGenerationMessage
+  | GetSettingsMessage
+  | ReportGeneratedMessage;
 
 export interface TabInfo {
   id?: number;
@@ -168,4 +192,22 @@ export interface ResponseParseOptions {
   checkQuality?: boolean;
   minQualityScore?: number;
   customValidators?: ValidationRule[];
+}
+
+// Work Queue Types
+export interface WorkItem {
+  id: string;
+  type: "GENERATE_REPORT" | "PROCESS_DATA" | "SYNC_SHEETS";
+  payload: Record<string, unknown>;
+  status: "pending" | "processing" | "completed" | "failed";
+  createdAt: number;
+  updatedAt?: number;
+  error?: string;
+  retryCount?: number;
+}
+
+export interface StorageResult {
+  success: boolean;
+  error?: string;
+  data?: unknown;
 }
