@@ -17,9 +17,9 @@ chrome.runtime.onInstalled.addListener(() => {
 });
 
 // Message listener for communication with content scripts and popup
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((message, _, sendResponse) => {
   messageHandler
-    .handleMessage(message, sender)
+    .handleMessage(message)
     .then((response) => {
       sendResponse(response);
     })

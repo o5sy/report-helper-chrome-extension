@@ -69,8 +69,7 @@ describe("Background Service Worker Integration", () => {
         },
       };
 
-      const mockSender = {} as chrome.runtime.MessageSender;
-      const response = await messageHandler.handleMessage(message, mockSender);
+      const response = await messageHandler.handleMessage(message);
 
       expect(response.success).toBe(true);
       expect(response.type).toBe("GENERATE_REPORT_RESPONSE");
@@ -82,8 +81,7 @@ describe("Background Service Worker Integration", () => {
         payload: {},
       };
 
-      const mockSender = {} as chrome.runtime.MessageSender;
-      const response = await messageHandler.handleMessage(message, mockSender);
+      const response = await messageHandler.handleMessage(message);
 
       expect(response.success).toBe(true);
       expect(response.type).toBe("GET_SETTINGS_RESPONSE");
