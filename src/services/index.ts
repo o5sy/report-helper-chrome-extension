@@ -64,3 +64,4 @@ export { PromptTemplateManager } from "./prompt-templates";
 export { ResponseParser } from "./response-parser";
 export { SheetsIntegrationService } from "./sheets-integration";
 export { AnswerRefiner } from "./answer-refiner";
+export { FeedbackGenerator } from "./feedback-generator";

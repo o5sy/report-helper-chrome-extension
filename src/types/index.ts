@@ -267,3 +267,47 @@ export interface BatchRefinementResult {
   errorCount: number;
   errors?: string[];
 }
+
+// Feedback Generation Types
+export interface BasicFeedbackRequest {
+  question: string;
+  answer: string;
+  language: PromptLanguage;
+  context?: string;
+}
+
+export interface PersonalizedFeedbackRequest {
+  question: string;
+  answer: string;
+  pastFeedbacks: string[];
+  language: PromptLanguage;
+  context?: string;
+}
+
+export interface FeedbackResult {
+  success: boolean;
+  feedback?: string;
+  error?: string;
+  isPersonalized?: boolean;
+  metadata?: {
+    tokensUsed?: number;
+    processingTime?: number;
+  };
+}
+
+export interface FeedbackPattern {
+  commonPhrases: string[];
+  tone: "formal" | "casual" | "encouraging" | "critical" | "neutral";
+  focusAreas: string[];
+  averageLength: number;
+}
+
+export interface SheetFeedbackData {
+  spreadsheetId: string;
+  sheetName: string;
+  questionColumn: number;
+  answerColumn: number;
+  feedbackColumn: number;
+  startRow: number;
+  endRow?: number;
+}

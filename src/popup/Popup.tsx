@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 
+import FeedbackTest from "./components/feedback-test";
 import GeminiApiKeyInput from "./components/gemini-api-key-input";
 import RefineContents from "./components/refine-contents";
 import TestContents from "./components/test-contents";
@@ -20,16 +21,30 @@ export const Popup: React.FC = () => {
       {/* tab */}
       <div className="flex justify-center mb-4">
         <button
-          className={`mr-4 ${selectedTab === "test" ? "bg-blue-500" : ""}`}
+          className={`mr-4 px-3 py-1 rounded ${
+            selectedTab === "test" ? "bg-blue-500 text-white" : "bg-gray-200"
+          }`}
           onClick={() => setSelectedTab("test")}
         >
           Test
         </button>
         <button
-          className={`${selectedTab === "refine" ? "bg-blue-500" : ""}`}
+          className={`mr-4 px-3 py-1 rounded ${
+            selectedTab === "refine" ? "bg-blue-500 text-white" : "bg-gray-200"
+          }`}
           onClick={() => setSelectedTab("refine")}
         >
           Refine
+        </button>
+        <button
+          className={`px-3 py-1 rounded ${
+            selectedTab === "feedback"
+              ? "bg-blue-500 text-white"
+              : "bg-gray-200"
+          }`}
+          onClick={() => setSelectedTab("feedback")}
+        >
+          Feedback
         </button>
       </div>
 
@@ -37,6 +52,10 @@ export const Popup: React.FC = () => {
 
       {selectedTab === "refine" && (
         <RefineContents geminiApiKey={geminiApiKey} />
+      )}
+
+      {selectedTab === "feedback" && (
+        <FeedbackTest geminiApiKey={geminiApiKey} />
       )}
     </div>
   );
