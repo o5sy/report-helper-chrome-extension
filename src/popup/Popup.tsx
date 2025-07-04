@@ -4,10 +4,9 @@ import FeedbackTest from "./components/feedback-test";
 import GeminiApiKeyInput from "./components/gemini-api-key-input";
 import RefineContents from "./components/refine-contents";
 import TestContents from "./components/test-contents";
-import { useUseGeminiApiKey } from "./hooks/use-gemini-api-key";
 
 export const Popup: React.FC = () => {
-  const [selectedTab, setSelectedTab] = useState<string>("test");
+  const [selectedTab, setSelectedTab] = useState<string>("feedback");
 
   const { geminiApiKey, changeGeminiApiKey } = useUseGeminiApiKey();
 

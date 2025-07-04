@@ -45,6 +45,16 @@ export interface RefineAnswersMessage {
   };
 }
 
+export interface GenerateFeedbackMessage {
+  type: "GENERATE_FEEDBACK";
+  payload: {
+    spreadsheetId: string;
+    sourceRange: string;
+    targetRange: string;
+    apiKey: string;
+  };
+}
+
 export interface MessageResponse {
   success: boolean;
   type: string;
@@ -57,7 +67,8 @@ export type ExtensionMessage =
   | GetSettingsMessage
   | ReportGeneratedMessage
   | SheetInfoDetectedMessage
-  | RefineAnswersMessage;
+  | RefineAnswersMessage
+  | GenerateFeedbackMessage;
 
 export interface TabInfo {
   id?: number;
@@ -310,4 +321,21 @@ export interface SheetFeedbackData {
   feedbackColumn: number;
   startRow: number;
   endRow?: number;
+}
+
+// Batch Feedback Generation Types
+export interface BatchFeedbackOptions {
+  spreadsheetId: string;
+  sourceRange: string;
+  targetRange: string;
+  customPrompt?: string;
+  onProgress?: (current: number, total: number, currentRow: number) => void;
+}
+
+export interface BatchFeedbackResult {
+  success: boolean;
+  processedCount: number;
+  successCount: number;
+  errorCount: number;
+  errors?: string[];
 }

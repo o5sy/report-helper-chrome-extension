@@ -1,10 +1,13 @@
 import type {
+  BatchFeedbackOptions,
+  BatchFeedbackResult,
   BatchRefinementOptions,
   BatchRefinementResult,
   StorageResult,
 } from "../types";
 
 import { AnswerRefiner } from "../services/answer-refiner";
+import { FeedbackGenerator } from "../services/feedback-generator";
 import { GeminiClient } from "../services/gemini-client";
 import { GoogleAuthService } from "../services/google-auth";
 import { GoogleSheetsService } from "../services/google-sheets";
@@ -25,6 +28,7 @@ export interface ProcessedReport {
 
 export class ApiOrchestrator {
   private answerRefiner?: AnswerRefiner;
+  private feedbackGenerator?: FeedbackGenerator;
 
   async processReportRequest(request: ReportRequest): Promise<StorageResult> {
     try {
@@ -141,11 +145,46 @@ export class ApiOrchestrator {
     }
   }
 
+  async generateFeedback(
+    options: BatchFeedbackOptions & { apiKey: string }
+  ): Promise<BatchFeedbackResult> {
+    try {
+      if (!this.feedbackGenerator) {
+        this.feedbackGenerator = new FeedbackGenerator({
+          apiKey: options.apiKey,
+          model: "gemini-2.0-flash",
+          maxOutputTokens: 1000,
+          temperature: 0.7,
+        });
+      }
+
+      const batchOptions: BatchFeedbackOptions = {
+        spreadsheetId: options.spreadsheetId,
+        sourceRange: options.sourceRange,
+        targetRange: options.targetRange,
+      };
+
+      return await this.feedbackGenerator.generateBatchFeedback(batchOptions);
+    } catch (error) {
+      return {
+        success: false,
+        processedCount: 0,
+        successCount: 0,
+        errorCount: 1,
+        errors: [
+          error instanceof Error ? error.message : "Unknown error occurred",
+        ],
+      };
+    }
+  }
+
   private async getGeminiApiKey(): Promise<string | null> {
     try {
       // Get API key from Chrome storage
-      const result = await chrome.storage.sync.get(["geminiApiKey"]);
-      return result.geminiApiKey || null;
+      const result = await globalThis.chrome?.storage?.sync?.get([
+        "geminiApiKey",
+      ]);
+      return result?.geminiApiKey || null;
     } catch (error) {
       console.error("Failed to get Gemini API key:", error);
       return null;

@@ -17,6 +17,8 @@ export class MessageHandler {
       switch (message.type) {
         case "REFINE_ANSWERS":
           return await this.handleRefineAnswers(message);
+        case "GENERATE_FEEDBACK":
+          return await this.handleGenerateFeedback(message);
         default:
           return {
             success: false,
@@ -53,6 +55,32 @@ export class MessageHandler {
       return {
         success: false,
         type: "REFINE_ANSWERS_RESPONSE",
+        error:
+          error instanceof Error ? error.message : "Unknown error occurred",
+      };
+    }
+  }
+
+  private async handleGenerateFeedback(
+    message: ExtensionMessage & { type: "GENERATE_FEEDBACK" }
+  ): Promise<MessageResponse> {
+    try {
+      const result = await this.apiOrchestrator.generateFeedback({
+        spreadsheetId: message.payload.spreadsheetId,
+        sourceRange: message.payload.sourceRange,
+        targetRange: message.payload.targetRange,
+        apiKey: message.payload.apiKey,
+      });
+
+      return {
+        success: result.success,
+        type: "GENERATE_FEEDBACK_RESPONSE",
+        data: result,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        type: "GENERATE_FEEDBACK_RESPONSE",
         error:
           error instanceof Error ? error.message : "Unknown error occurred",
       };
