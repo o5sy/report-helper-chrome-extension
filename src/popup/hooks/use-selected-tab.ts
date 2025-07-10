@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 
+import { TabItem } from "../types";
+
 export const useUseSelectedTab = () => {
-  const [selectedTab, setSelectedTab] = useState<string>("feedback");
+  const [selectedTab, setSelectedTab] = useState<TabItem>(TabItem.REFINE);
 
   useEffect(() => {
     const loadSavedTab = async () => {

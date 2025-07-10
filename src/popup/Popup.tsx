@@ -1,3 +1,4 @@
+import { TAB_ITEMS, TabItem } from "./types";
 import {
   useUseGeminiApiKey,
   useUseSelectedTab,
@@ -6,11 +7,10 @@ import {
 
 import FeedbackTest from "./components/feedback-test";
 import GeminiApiKeyInput from "./components/gemini-api-key-input";
-import React from "react";
 import RefineContents from "./components/refine-contents";
 import SheetIdInput from "./components/sheet-id-input";
 
-export const Popup: React.FC = () => {
+export function Popup() {
   const { selectedTab, onChangeSelectedTab } = useUseSelectedTab();
 
   const { geminiApiKey, changeGeminiApiKey } = useUseGeminiApiKey();
@@ -31,44 +31,30 @@ export const Popup: React.FC = () => {
 
       {/* tab */}
       <div className="flex justify-center my-4">
-        {/* <button
-          className={`mr-4 px-3 py-1 rounded ${
-            selectedTab === "test" ? "bg-blue-500 text-white" : "bg-gray-200"
-          }`}
-          onClick={() => setSelectedTab("test")}
-        >
-          Test
-        </button> */}
-        <button
-          className={`mr-4 px-3 py-1 rounded ${
-            selectedTab === "refine" ? "bg-blue-500 text-white" : "bg-gray-200"
-          }`}
-          onClick={() => onChangeSelectedTab("refine")}
-        >
-          Refine
-        </button>
-        <button
-          className={`px-3 py-1 rounded ${
-            selectedTab === "feedback"
-              ? "bg-blue-500 text-white"
-              : "bg-gray-200"
-          }`}
-          onClick={() => onChangeSelectedTab("feedback")}
-        >
-          Feedback
-        </button>
+        {TAB_ITEMS.map((tab) => (
+          <button
+            key={tab.value}
+            className={`mr-4 px-3 py-1 rounded ${
+              selectedTab === tab.value
+                ? "bg-blue-500 text-white"
+                : "bg-gray-200"
+            }`}
+            onClick={() => onChangeSelectedTab(tab.value)}
+          >
+            {tab.label}
+          </button>
+        ))}
       </div>
 
+      {/* tab content */}
       <div className="border-t pt-4">
-        {/* {selectedTab === "test" && <TestContents geminiApiKey={geminiApiKey} />} */}
-
-        {selectedTab === "refine" && (
+        {selectedTab === TabItem.REFINE && (
           <RefineContents
             geminiApiKey={geminiApiKey}
             spreadsheetId={spreadsheetId}
           />
         )}
-        {selectedTab === "feedback" && (
+        {selectedTab === TabItem.FEEDBACK && (
           <FeedbackTest
             geminiApiKey={geminiApiKey}
             spreadsheetId={spreadsheetId}
@@ -77,4 +63,4 @@ export const Popup: React.FC = () => {
       </div>
     </div>
   );
-};
+}
