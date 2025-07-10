@@ -1,23 +1,16 @@
 import React, { useEffect, useState } from "react";
+import { useUseGeminiApiKey, useUseSpreadSheetId } from "./hooks";
 
 import FeedbackTest from "./components/feedback-test";
 import GeminiApiKeyInput from "./components/gemini-api-key-input";
 import RefineContents from "./components/refine-contents";
 import SheetIdInput from "./components/sheet-id-input";
-import { useUseSpreadSheetId } from "./hooks";
 
 export const Popup: React.FC = () => {
   const [selectedTab, setSelectedTab] = useState<string>("feedback");
 
+  const { geminiApiKey, changeGeminiApiKey } = useUseGeminiApiKey();
   const { spreadsheetId, onChangeSpreadsheetId } = useUseSpreadSheetId();
-
-  // const { geminiApiKey, changeGeminiApiKey } = useUseGeminiApiKey();
-
-  // TODO: 테스트용 키 (꼭 올리기 전에 삭제해야함)
-  const [geminiApiKey, setGeminiApiKey] = useState<string>("");
-  const changeGeminiApiKey = (value: string) => {
-    setGeminiApiKey(value);
-  };
 
   // Load saved tab from localStorage
   useEffect(() => {
