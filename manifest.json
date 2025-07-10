@@ -29,7 +29,7 @@
       "run_at": "document_idle"
     }
   ],
-  "permissions": ["identity", "storage"],
+  "permissions": ["identity", "storage", "activeTab"],
   "host_permissions": ["http://*/*", "https://*/*"],
   "oauth2": {
     "client_id": "459670883381-hp10s58i52nhla3siuc5gsqkpat86rgb.apps.googleusercontent.com",
