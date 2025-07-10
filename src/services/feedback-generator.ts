@@ -231,17 +231,17 @@ export class FeedbackGenerator {
       prompt += "1. 잘한 점과 아쉬운 점을 균형있게 포함\n";
       prompt += "2. 기술적 측면과 협업 측면에서의 세부 피드백\n";
       prompt += "3. 구체적이고 실행 가능한 개선 방안 제시\n";
-      prompt += "4. 총 500자 내외로 작성\n\n";
+      prompt += "4. 응답은 한글 기준 500자 내외로 작성\n";
+      prompt += "5. 마크다운 형식을 사용하지 말고 일반 텍스트로만 작성\n\n";
       prompt += "피드백 형식:\n";
-      prompt += "**잘한 점:**\n";
-      prompt += "- (기술적 측면)\n";
-      prompt += "- (협업 측면)\n\n";
-      prompt += "**아쉬운 점:**\n";
-      prompt += "- (기술적 측면)\n";
-      prompt += "- (협업 측면)\n\n";
-      prompt += "**개선 방안:**\n";
-      prompt += "- 구체적인 실행 방안\n\n";
-      prompt += "피드백:";
+      prompt += "잘한 점:\n";
+      prompt += "- 기술적 측면\n";
+      prompt += "- 협업 측면\n\n";
+      prompt += "아쉬운 점:\n";
+      prompt += "- 기술적 측면\n";
+      prompt += "- 협업 측면\n\n";
+      prompt += "개선 방안:\n";
+      prompt += "- 구체적인 실행 방안";
 
       return prompt;
     } else {
@@ -258,7 +258,8 @@ export class FeedbackGenerator {
       prompt += "- Accuracy and completeness of content\n";
       prompt += "- Clarity and specificity of the answer\n";
       prompt += "- Logical structure and flow\n";
-      prompt += "- Suggestions for improvement\n\n";
+      prompt += "- Suggestions for improvement\n";
+      prompt += "- Use plain text format without markdown formatting\n\n";
       prompt += "Feedback:";
 
       return prompt;
