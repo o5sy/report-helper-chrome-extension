@@ -1,29 +1,20 @@
-import React, { useEffect, useState } from "react";
-import { useUseGeminiApiKey, useUseSpreadSheetId } from "./hooks";
+import {
+  useUseGeminiApiKey,
+  useUseSelectedTab,
+  useUseSpreadSheetId,
+} from "./hooks";
 
 import FeedbackTest from "./components/feedback-test";
 import GeminiApiKeyInput from "./components/gemini-api-key-input";
+import React from "react";
 import RefineContents from "./components/refine-contents";
 import SheetIdInput from "./components/sheet-id-input";
 
 export const Popup: React.FC = () => {
-  const [selectedTab, setSelectedTab] = useState<string>("feedback");
+  const { selectedTab, onChangeSelectedTab } = useUseSelectedTab();
 
   const { geminiApiKey, changeGeminiApiKey } = useUseGeminiApiKey();
   const { spreadsheetId, onChangeSpreadsheetId } = useUseSpreadSheetId();
-
-  // Load saved tab from localStorage
-  useEffect(() => {
-    const savedTab = localStorage.getItem("selectedTab");
-    if (savedTab) {
-      setSelectedTab(savedTab);
-    }
-  }, []);
-
-  // Save tab to localStorage whenever it changes
-  useEffect(() => {
-    localStorage.setItem("selectedTab", selectedTab);
-  }, [selectedTab]);
 
   return (
     <div className="w-[500px] p-4 bg-background text-foreground max-h-[600px] overflow-y-auto">
@@ -52,7 +43,7 @@ export const Popup: React.FC = () => {
           className={`mr-4 px-3 py-1 rounded ${
             selectedTab === "refine" ? "bg-blue-500 text-white" : "bg-gray-200"
           }`}
-          onClick={() => setSelectedTab("refine")}
+          onClick={() => onChangeSelectedTab("refine")}
         >
           Refine
         </button>
@@ -62,7 +53,7 @@ export const Popup: React.FC = () => {
               ? "bg-blue-500 text-white"
               : "bg-gray-200"
           }`}
-          onClick={() => setSelectedTab("feedback")}
+          onClick={() => onChangeSelectedTab("feedback")}
         >
           Feedback
         </button>
