@@ -1,14 +1,36 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import FeedbackTest from "./components/feedback-test";
 import GeminiApiKeyInput from "./components/gemini-api-key-input";
 import RefineContents from "./components/refine-contents";
-import TestContents from "./components/test-contents";
+import SheetIdInput from "./components/sheet-id-input";
+import { useUseSpreadSheetId } from "./hooks";
 
 export const Popup: React.FC = () => {
   const [selectedTab, setSelectedTab] = useState<string>("feedback");
 
-  const { geminiApiKey, changeGeminiApiKey } = useUseGeminiApiKey();
+  const { spreadsheetId, onChangeSpreadsheetId } = useUseSpreadSheetId();
+
+  // const { geminiApiKey, changeGeminiApiKey } = useUseGeminiApiKey();
+
+  // TODO: 테스트용 키 (꼭 올리기 전에 삭제해야함)
+  const [geminiApiKey, setGeminiApiKey] = useState<string>("");
+  const changeGeminiApiKey = (value: string) => {
+    setGeminiApiKey(value);
+  };
+
+  // Load saved tab from localStorage
+  useEffect(() => {
+    const savedTab = localStorage.getItem("selectedTab");
+    if (savedTab) {
+      setSelectedTab(savedTab);
+    }
+  }, []);
+
+  // Save tab to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem("selectedTab", selectedTab);
+  }, [selectedTab]);
 
   return (
     <div className="w-[500px] p-4 bg-background text-foreground max-h-[600px] overflow-y-auto">
@@ -17,16 +39,22 @@ export const Popup: React.FC = () => {
       {/* gemini api key input */}
       <GeminiApiKeyInput apiKey={geminiApiKey} onChange={changeGeminiApiKey} />
 
+      {/* sheet id input */}
+      <SheetIdInput
+        spreadsheetId={spreadsheetId}
+        onChange={onChangeSpreadsheetId}
+      />
+
       {/* tab */}
-      <div className="flex justify-center mb-4">
-        <button
+      <div className="flex justify-center my-4">
+        {/* <button
           className={`mr-4 px-3 py-1 rounded ${
             selectedTab === "test" ? "bg-blue-500 text-white" : "bg-gray-200"
           }`}
           onClick={() => setSelectedTab("test")}
         >
           Test
-        </button>
+        </button> */}
         <button
           className={`mr-4 px-3 py-1 rounded ${
             selectedTab === "refine" ? "bg-blue-500 text-white" : "bg-gray-200"
@@ -47,15 +75,22 @@ export const Popup: React.FC = () => {
         </button>
       </div>
 
-      {selectedTab === "test" && <TestContents geminiApiKey={geminiApiKey} />}
+      <div className="border-t pt-4">
+        {/* {selectedTab === "test" && <TestContents geminiApiKey={geminiApiKey} />} */}
 
-      {selectedTab === "refine" && (
-        <RefineContents geminiApiKey={geminiApiKey} />
-      )}
-
-      {selectedTab === "feedback" && (
-        <FeedbackTest geminiApiKey={geminiApiKey} />
-      )}
+        {selectedTab === "refine" && (
+          <RefineContents
+            geminiApiKey={geminiApiKey}
+            spreadsheetId={spreadsheetId}
+          />
+        )}
+        {selectedTab === "feedback" && (
+          <FeedbackTest
+            geminiApiKey={geminiApiKey}
+            spreadsheetId={spreadsheetId}
+          />
+        )}
+      </div>
     </div>
   );
 };

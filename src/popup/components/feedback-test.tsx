@@ -9,9 +9,13 @@ import { FeedbackGenerator } from "../../services";
 
 interface FeedbackTestProps {
   geminiApiKey: string;
+  spreadsheetId: string;
 }
 
-const FeedbackTest: React.FC<FeedbackTestProps> = ({ geminiApiKey }) => {
+const FeedbackTest: React.FC<FeedbackTestProps> = ({
+  geminiApiKey,
+  spreadsheetId,
+}) => {
   const [question, setQuestion] = useState<string>(
     "JavaScript의 장점은 무엇인가요?"
   );
@@ -22,9 +26,9 @@ const FeedbackTest: React.FC<FeedbackTestProps> = ({ geminiApiKey }) => {
   const [language, setLanguage] = useState<"ko" | "en">("ko");
   const [result, setResult] = useState<FeedbackResult | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [processingTime, setProcessingTime] = useState<number | null>(null);
 
   // Sheet integration fields
-  const [spreadsheetId, setSpreadsheetId] = useState<string>("");
   const [questionColumn, setQuestionColumn] = useState<string>("");
   const [answerColumn, setAnswerColumn] = useState<string>("");
   const [targetColumn, setTargetColumn] = useState<string>("");
@@ -34,57 +38,78 @@ const FeedbackTest: React.FC<FeedbackTestProps> = ({ geminiApiKey }) => {
     null
   );
   const [isBatchLoading, setIsBatchLoading] = useState<boolean>(false);
+  const [batchProcessingTime, setBatchProcessingTime] = useState<number | null>(
+    null
+  );
   const [batchProgress, setBatchProgress] = useState<{
     current: number;
     total: number;
     currentRow: number;
   } | null>(null);
 
-  // Load saved data from localStorage
+  // Load saved data from chrome.storage
   useEffect(() => {
-    const savedData = localStorage.getItem("feedbackTestData");
-    if (savedData) {
+    const loadSavedData = async () => {
       try {
-        const data = JSON.parse(savedData);
-        setQuestion(data.question || "JavaScript의 장점은 무엇인가요?");
-        setAnswer(
-          data.answer || "JavaScript는 웹 개발에서 널리 사용되는 언어입니다."
-        );
-        setContext(data.context || "");
-        setLanguage(data.language || "ko");
-        setSpreadsheetId(data.spreadsheetId || "");
-        setQuestionColumn(data.questionColumn || "");
-        setAnswerColumn(data.answerColumn || "");
-        setTargetColumn(data.targetColumn || "");
-        setStartRow(data.startRow || 2);
-        setEndRow(data.endRow || 10);
+        if (window.chrome?.storage?.local) {
+          const result = await window.chrome.storage.local.get([
+            "feedbackTestData",
+          ]);
+          if (result.feedbackTestData) {
+            const data = result.feedbackTestData;
+            setQuestion(data.question || "JavaScript의 장점은 무엇인가요?");
+            setAnswer(
+              data.answer ||
+                "JavaScript는 웹 개발에서 널리 사용되는 언어입니다."
+            );
+            setContext(data.context || "");
+            setLanguage(data.language || "ko");
+            setQuestionColumn(data.questionColumn || "");
+            setAnswerColumn(data.answerColumn || "");
+            setTargetColumn(data.targetColumn || "");
+            setStartRow(data.startRow || 2);
+            setEndRow(data.endRow || 10);
+          }
+        }
       } catch (error) {
         console.error("Failed to load saved data:", error);
       }
-    }
+    };
+
+    loadSavedData();
   }, []);
 
-  // Save data to localStorage whenever values change
+  // Save data to chrome.storage whenever values change
   useEffect(() => {
-    const dataToSave = {
-      question,
-      answer,
-      context,
-      language,
-      spreadsheetId,
-      questionColumn,
-      answerColumn,
-      targetColumn,
-      startRow,
-      endRow,
+    const saveData = async () => {
+      try {
+        if (window.chrome?.storage?.local) {
+          const dataToSave = {
+            question,
+            answer,
+            context,
+            language,
+            questionColumn,
+            answerColumn,
+            targetColumn,
+            startRow,
+            endRow,
+          };
+          await window.chrome.storage.local.set({
+            feedbackTestData: dataToSave,
+          });
+        }
+      } catch (error) {
+        console.error("Failed to save feedback test data:", error);
+      }
     };
-    localStorage.setItem("feedbackTestData", JSON.stringify(dataToSave));
+
+    saveData();
   }, [
     question,
     answer,
     context,
     language,
-    spreadsheetId,
     questionColumn,
     answerColumn,
     targetColumn,
@@ -105,6 +130,8 @@ const FeedbackTest: React.FC<FeedbackTestProps> = ({ geminiApiKey }) => {
 
     setIsLoading(true);
     setResult(null);
+    setProcessingTime(null);
+    const startTime = Date.now();
 
     try {
       const feedbackGenerator = new FeedbackGenerator({
@@ -124,8 +151,12 @@ const FeedbackTest: React.FC<FeedbackTestProps> = ({ geminiApiKey }) => {
       const feedbackResult = await feedbackGenerator.generateBasicFeedback(
         request
       );
+      const endTime = Date.now();
+      setProcessingTime(endTime - startTime);
       setResult(feedbackResult);
     } catch (error) {
+      const endTime = Date.now();
+      setProcessingTime(endTime - startTime);
       setResult({
         success: false,
         error: `피드백 생성 중 오류가 발생했습니다: ${
@@ -162,6 +193,8 @@ const FeedbackTest: React.FC<FeedbackTestProps> = ({ geminiApiKey }) => {
 
     setIsBatchLoading(true);
     setBatchResult(null);
+    setBatchProcessingTime(null);
+    const startTime = Date.now();
     setBatchProgress({
       current: 0,
       total: endRow - startRow + 1,
@@ -184,6 +217,9 @@ const FeedbackTest: React.FC<FeedbackTestProps> = ({ geminiApiKey }) => {
         },
       });
 
+      const endTime = Date.now();
+      setBatchProcessingTime(endTime - startTime);
+
       if (response.success) {
         setBatchResult(response.data);
         // Show success notification
@@ -202,6 +238,8 @@ const FeedbackTest: React.FC<FeedbackTestProps> = ({ geminiApiKey }) => {
         });
       }
     } catch (error) {
+      const endTime = Date.now();
+      setBatchProcessingTime(endTime - startTime);
       setBatchResult({
         success: false,
         processedCount: 0,
@@ -350,6 +388,11 @@ const FeedbackTest: React.FC<FeedbackTestProps> = ({ geminiApiKey }) => {
         {batchResult && (
           <div className="mt-4 p-3 border rounded">
             <h4 className="font-medium mb-2">배치 처리 결과:</h4>
+            {batchProcessingTime && (
+              <div className="mb-2 text-xs text-gray-600">
+                소요시간: {(batchProcessingTime / 1000).toFixed(2)}초
+              </div>
+            )}
             {batchResult.success ? (
               <div className="space-y-2">
                 <div className="p-3 bg-green-50 border border-green-200 rounded">
@@ -472,6 +515,11 @@ const FeedbackTest: React.FC<FeedbackTestProps> = ({ geminiApiKey }) => {
         {result && (
           <div className="mt-4 p-3 border rounded">
             <h4 className="font-medium mb-2">결과:</h4>
+            {processingTime && (
+              <div className="mb-2 text-xs text-gray-600">
+                소요시간: {(processingTime / 1000).toFixed(2)}초
+              </div>
+            )}
             {result.success ? (
               <div className="space-y-2">
                 <div className="p-3 bg-green-50 border border-green-200 rounded">
