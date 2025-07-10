@@ -8,13 +8,13 @@ import {
 import FeedbackTest from "./components/feedback-test";
 import GeminiApiKeyInput from "./components/gemini-api-key-input";
 import RefineContents from "./components/refine-contents";
-import SheetIdInput from "./components/sheet-id-input";
+import SheetIdReadonlyInput from "./components/sheet-id-readonly-input";
 
 export function Popup() {
   const { selectedTab, onChangeSelectedTab } = useUseSelectedTab();
 
   const { geminiApiKey, changeGeminiApiKey } = useUseGeminiApiKey();
-  const { spreadsheetId, onChangeSpreadsheetId } = useUseSpreadSheetId();
+  const { spreadsheetId } = useUseSpreadSheetId();
 
   return (
     <div className="w-[500px] p-4 bg-background text-foreground max-h-[600px] overflow-y-auto">
@@ -24,10 +24,7 @@ export function Popup() {
       <GeminiApiKeyInput apiKey={geminiApiKey} onChange={changeGeminiApiKey} />
 
       {/* sheet id input */}
-      <SheetIdInput
-        spreadsheetId={spreadsheetId}
-        onChange={onChangeSpreadsheetId}
-      />
+      <SheetIdReadonlyInput spreadsheetId={spreadsheetId} />
 
       {/* tab */}
       <div className="flex justify-center my-4">

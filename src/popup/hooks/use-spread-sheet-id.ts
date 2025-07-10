@@ -5,7 +5,6 @@ import { getCurrentSpreadsheetId } from "@/utils/storage";
 export const useUseSpreadSheetId = () => {
   const [spreadsheetId, setSpreadsheetId] = useState<string>("");
 
-  // Auto-detect spreadsheet ID from current tab
   useEffect(() => {
     const detectSpreadsheetId = async () => {
       try {
@@ -21,5 +20,5 @@ export const useUseSpreadSheetId = () => {
     detectSpreadsheetId();
   }, []);
 
-  return { spreadsheetId, onChangeSpreadsheetId: setSpreadsheetId };
+  return { spreadsheetId };
 };
