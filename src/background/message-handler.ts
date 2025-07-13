@@ -67,7 +67,10 @@ export class MessageHandler {
     try {
       const result = await this.apiOrchestrator.generateFeedback({
         spreadsheetId: message.payload.spreadsheetId,
-        sourceRange: message.payload.sourceRange,
+        sourceRange: {
+          questionRange: message.payload.sourceRange.questionRange,
+          answerRange: message.payload.sourceRange.answerRange,
+        },
         targetRange: message.payload.targetRange,
         apiKey: message.payload.apiKey,
       });
@@ -86,37 +89,4 @@ export class MessageHandler {
       };
     }
   }
-
-  // async sendMessageToTab(
-  //   tabId: number,
-  //   message: ExtensionMessage
-  // ): Promise<MessageResponse> {
-  //   try {
-  //     const response = await chrome.tabs.sendMessage(tabId, message);
-  //     return response || { success: true, type: "MESSAGE_SENT" };
-  //   } catch (error) {
-  //     return {
-  //       success: false,
-  //       type: "ERROR_RESPONSE",
-  //       error:
-  //         error instanceof Error ? error.message : "Failed to send message",
-  //     };
-  //   }
-  // }
-
-  // async sendMessageToRuntime(
-  //   message: ExtensionMessage
-  // ): Promise<MessageResponse> {
-  //   try {
-  //     const response = await chrome.runtime.sendMessage(message);
-  //     return response || { success: true, type: "MESSAGE_SENT" };
-  //   } catch (error) {
-  //     return {
-  //       success: false,
-  //       type: "ERROR_RESPONSE",
-  //       error:
-  //         error instanceof Error ? error.message : "Failed to send message",
-  //     };
-  //   }
-  // }
 }

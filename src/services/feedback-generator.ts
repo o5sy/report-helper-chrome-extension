@@ -80,29 +80,36 @@ export class FeedbackGenerator {
         GoogleSheetsServiceFactory.getIntegrationService();
 
       // Read existing data
-      const readResult = await integrationService.readExistingReport(
+      const readQuestionResult = await integrationService.readExistingReport(
         options.spreadsheetId,
-        options.sourceRange
+        options.sourceRange.questionRange
       );
 
-      if (!readResult.success) {
+      const readAnswerResult = await integrationService.readExistingReport(
+        options.spreadsheetId,
+        options.sourceRange.answerRange
+      );
+
+      if (!readQuestionResult.success || !readAnswerResult.success) {
+        const errors: string[] = [];
+        [readQuestionResult, readAnswerResult].forEach((result) => {
+          if (!result.success) {
+            errors.push(`Failed to read spreadsheet data: ${result.error}`);
+          }
+        });
         return {
           success: false,
           processedCount: 0,
           successCount: 0,
           errorCount: 1,
-          errors: [`Failed to read spreadsheet data: ${readResult.error}`],
+          errors,
         };
       }
 
-      const { rows } = readResult.data!;
+      const questionRows = readQuestionResult.data?.rows || [];
+      const answerRows = readAnswerResult.data?.rows || [];
 
-      // For batch feedback, assume first column is question, second is answer
-      // This matches the sourceRange format (e.g., E:F means E=question, F=answer)
-      const questionColumnIndex = 0;
-      const answerColumnIndex = 1;
-
-      if (rows.length === 0) {
+      if (questionRows.length === 0 || answerRows.length === 0) {
         return {
           success: false,
           processedCount: 0,
@@ -118,20 +125,20 @@ export class FeedbackGenerator {
       let successCount = 0;
       let errorCount = 0;
 
-      for (let i = 0; i < rows.length; i++) {
-        const row = rows[i];
-        const question = row[questionColumnIndex]?.toString().trim() || "";
-        const answer = row[answerColumnIndex]?.toString().trim() || "";
+      for (let i = 0; i < questionRows.length; i++) {
+        const question = questionRows.at(i)?.toString().trim() || "";
+        const answer = answerRows.at(i)?.toString().trim() || "";
 
         // Report progress if callback is provided
         if (options.onProgress) {
           // Extract row number from sourceRange (e.g., "E2:F10" -> start from row 2)
-          const sourceRangeMatch = options.sourceRange.match(/(\d+)/);
+          const sourceRangeMatch =
+            options.sourceRange.questionRange.match(/(\d+)/);
           const startRowFromRange = sourceRangeMatch
             ? parseInt(sourceRangeMatch[1])
             : 1;
           const currentRow = startRowFromRange + i;
-          options.onProgress(i + 1, rows.length, currentRow);
+          options.onProgress(i + 1, questionRows.length, currentRow);
         }
 
         if (!question || !answer) {
@@ -171,7 +178,7 @@ export class FeedbackGenerator {
         if (!writeResult.success) {
           return {
             success: false,
-            processedCount: rows.length,
+            processedCount: questionRows.length,
             successCount,
             errorCount: errorCount + 1,
             errors: [
@@ -184,7 +191,7 @@ export class FeedbackGenerator {
 
       return {
         success: true,
-        processedCount: rows.length,
+        processedCount: questionRows.length,
         successCount,
         errorCount,
         errors: errors.length > 0 ? errors : undefined,
@@ -202,16 +209,6 @@ export class FeedbackGenerator {
         ],
       };
     }
-  }
-
-  private findColumnIndex(headers: string[], searchTerms: string[]): number {
-    for (let i = 0; i < headers.length; i++) {
-      const header = headers[i]?.toString().toLowerCase().trim() || "";
-      if (searchTerms.some((term) => header.includes(term.toLowerCase()))) {
-        return i;
-      }
-    }
-    return -1;
   }
 
   private buildBasicFeedbackPrompt(request: BasicFeedbackRequest): string {

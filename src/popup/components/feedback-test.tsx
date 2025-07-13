@@ -112,16 +112,18 @@ const FeedbackTest: React.FC<FeedbackTestProps> = ({
     });
 
     try {
-      // Create source range for specific rows
-      const sourceRange = `${questionColumn}${startRow}:${answerColumn}${endRow}`;
+      const questionRange = `${questionColumn}${startRow}:${questionColumn}${endRow}`;
+      const answerRange = `${answerColumn}${startRow}:${answerColumn}${endRow}`;
       const targetRange = `${targetColumn}${startRow}:${targetColumn}${endRow}`;
 
-      // Send message to background script for processing
       const response = await globalThis.chrome?.runtime?.sendMessage({
         type: "GENERATE_FEEDBACK",
         payload: {
           spreadsheetId: spreadsheetId.trim(),
-          sourceRange: sourceRange,
+          sourceRange: {
+            questionRange,
+            answerRange,
+          },
           targetRange: targetRange,
           apiKey: geminiApiKey,
         },
@@ -132,7 +134,6 @@ const FeedbackTest: React.FC<FeedbackTestProps> = ({
 
       if (response.success) {
         setBatchResult(response.data);
-        // Show success notification
         alert(
           "배치 피드백 생성이 완료되었습니다. 팝업을 닫아도 처리가 계속됩니다."
         );

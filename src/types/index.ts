@@ -49,7 +49,10 @@ export interface GenerateFeedbackMessage {
   type: "GENERATE_FEEDBACK";
   payload: {
     spreadsheetId: string;
-    sourceRange: string;
+    sourceRange: {
+      questionRange: string;
+      answerRange: string;
+    };
     targetRange: string;
     apiKey: string;
   };
@@ -326,7 +329,10 @@ export interface SheetFeedbackData {
 // Batch Feedback Generation Types
 export interface BatchFeedbackOptions {
   spreadsheetId: string;
-  sourceRange: string;
+  sourceRange: {
+    questionRange: string;
+    answerRange: string;
+  };
   targetRange: string;
   customPrompt?: string;
   onProgress?: (current: number, total: number, currentRow: number) => void;
