@@ -215,10 +215,9 @@ const FeedbackTest: React.FC<FeedbackTestProps> = ({
             <input
               type="number"
               className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
-              placeholder="2"
               value={startRow}
-              onChange={(e) => setStartRow(parseInt(e.target.value) || 2)}
-              min="1"
+              onChange={(e) => setStartRow(parseInt(e.target.value))}
+              onBlur={(e) => e.target.value === "" && setStartRow(0)}
             />
           </div>
           <div>
@@ -226,10 +225,9 @@ const FeedbackTest: React.FC<FeedbackTestProps> = ({
             <input
               type="number"
               className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
-              placeholder="10"
               value={endRow}
-              onChange={(e) => setEndRow(parseInt(e.target.value) || 10)}
-              min="1"
+              onChange={(e) => setEndRow(parseInt(e.target.value))}
+              onBlur={(e) => e.target.value === "" && setEndRow(0)}
             />
           </div>
         </div>

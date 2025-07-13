@@ -77,16 +77,11 @@ export class SheetsIntegrationService {
           error: `Failed to read existing report: ${result.error}`,
         };
       }
-
-      const values = result.data?.values || [];
-      const headers = values.length > 0 ? values[0] : [];
-      const rows = values.length > 1 ? values.slice(1) : [];
-
       return {
         success: true,
         data: {
-          headers,
-          rows,
+          headers: [],
+          rows: result.data?.values || [],
         },
       };
     } catch (error) {
