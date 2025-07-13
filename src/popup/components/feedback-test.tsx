@@ -169,12 +169,10 @@ const FeedbackTest: React.FC<FeedbackTestProps> = ({
   };
 
   return (
-    <div className="space-y-6">
-      <h3 className="text-lg font-semibold">피드백 생성 테스트</h3>
+    <>
+      <h2 className="text-lg font-semibold mb-3">피드백 생성</h2>
 
-      {/* Batch Feedback Generation - 먼저 렌더링 */}
-      <div className="border rounded-lg p-4 space-y-4">
-        <h4 className="font-medium">배치 피드백 생성 (시트 연동)</h4>
+      <div className="space-y-3">
         <div className="grid grid-cols-3 gap-2">
           <div>
             <label className="block text-sm font-medium mb-1">질문 열</label>
@@ -323,7 +321,7 @@ const FeedbackTest: React.FC<FeedbackTestProps> = ({
           </div>
         )}
       </div>
-    </div>
+    </>
   );
 };
 
