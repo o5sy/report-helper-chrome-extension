@@ -24,7 +24,8 @@ export const useUseGeminiApiKey = () => {
   }, []);
 
   const changeGeminiApiKey = async (value: string) => {
-    // API 키를 로컬 스토리지에 저장
+    setGeminiApiKey(value);
+
     try {
       if (window.chrome?.storage?.local) {
         await window.chrome.storage.local.set({ geminiApiKey: value });
