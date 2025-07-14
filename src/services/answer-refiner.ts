@@ -88,7 +88,6 @@ export class AnswerRefiner {
   ): Promise<RefinementResult> {
     try {
       const prompt = customPrompt || this.DEFAULT_PROMPT;
-      console.log("🚀 ~ AnswerRefiner ~ prompt:", prompt);
 
       const result = await this.geminiClient.processText({
         text,
