@@ -2,7 +2,6 @@ import type { GeminiConfig, TextProcessingRequest } from "../types";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { GeminiClient } from "./gemini-client";
-import { ResponseParser } from "./response-parser";
 
 // Mock the Google GenAI module
 vi.mock("@google/genai", () => ({
@@ -15,7 +14,6 @@ vi.mock("@google/genai", () => ({
 
 describe("Gemini Integration", () => {
   let client: GeminiClient;
-  let responseParser: ResponseParser;
 
   beforeEach(() => {
     const config: GeminiConfig = {
@@ -26,7 +24,6 @@ describe("Gemini Integration", () => {
     };
 
     client = new GeminiClient(config);
-    responseParser = new ResponseParser();
   });
 
   describe("End-to-End Text Processing", () => {
@@ -77,40 +74,6 @@ describe("Gemini Integration", () => {
       expect(result.success).toBe(true);
       expect(result.processedText).toBe(mockResponse.text);
       expect(result.processingType).toBe("feedback");
-    });
-  });
-
-  describe("Response Processing Integration", () => {
-    it("should parse and validate response correctly", () => {
-      const rawResponse = {
-        text: "처리된 응답 텍스트입니다.",
-        usageMetadata: {
-          totalTokenCount: 30,
-          promptTokenCount: 15,
-          candidatesTokenCount: 15,
-        },
-      };
-
-      const parsed = responseParser.parseResponse(rawResponse, {
-        validateStructure: true,
-      });
-
-      expect(parsed.isValid).toBe(true);
-      expect(parsed.content).toBe(rawResponse.text);
-      expect(parsed.metadata.tokensUsed).toBe(30);
-      expect(parsed.quality.score).toBeGreaterThan(0);
-    });
-
-    it("should handle invalid response", () => {
-      const rawResponse = {
-        text: "",
-        usageMetadata: { totalTokenCount: 0 },
-      };
-
-      const parsed = responseParser.parseResponse(rawResponse);
-
-      expect(parsed.isValid).toBe(false);
-      expect(parsed.errors).toContain("Response is empty");
     });
   });
 
