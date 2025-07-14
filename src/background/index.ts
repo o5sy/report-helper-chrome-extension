@@ -1,15 +1,15 @@
 // Background Service Worker for Report Generator Extension
 /// <reference types="chrome"/>
 import { MessageHandler } from "./message-handler";
-import { ServiceWorkerManager } from "./service-worker-manager";
+// import { ServiceWorkerManager } from "./service-worker-manager";
 
 console.log("Report Generator background service worker loaded");
 
 const messageHandler = new MessageHandler();
-const serviceWorkerManager = new ServiceWorkerManager();
+// const serviceWorkerManager = new ServiceWorkerManager();
 
 // Initialize service worker
-serviceWorkerManager.initialize();
+// serviceWorkerManager.initialize();
 
 // Extension installed event
 chrome.runtime.onInstalled.addListener(() => {
@@ -36,20 +36,20 @@ chrome.runtime.onMessage.addListener((message, _, sendResponse) => {
 });
 
 // Keep service worker alive
-chrome.runtime.onConnect.addListener(() => {
-  // Keep connection alive
-});
+// chrome.runtime.onConnect.addListener(() => {
+//   // Keep connection alive
+// });
 
 // Process work queue periodically
-setInterval(() => {
-  serviceWorkerManager
-    .processQueue()
-    .then((result) => {
-      if (!result.success) {
-        console.error("Failed to process queue:", result.error);
-      }
-    })
-    .catch((error) => {
-      console.error("Queue processing error:", error);
-    });
-}, 30000); // Every 30 seconds
+// setInterval(() => {
+//   serviceWorkerManager
+//     .processQueue()
+//     .then((result) => {
+//       if (!result.success) {
+//         console.error("Failed to process queue:", result.error);
+//       }
+//     })
+//     .catch((error) => {
+//       console.error("Queue processing error:", error);
+//     });
+// }, 30000); // Every 30 seconds

@@ -31,10 +31,6 @@ export class AnswerRefiner {
     private sheetsService: GoogleSheetsService
   ) {}
 
-  getDefaultPromptTemplate(): string {
-    return this.DEFAULT_PROMPT;
-  }
-
   async extractAnswerData(
     spreadsheetId: string,
     range: string

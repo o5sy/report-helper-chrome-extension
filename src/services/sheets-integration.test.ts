@@ -119,66 +119,6 @@ describe("SheetsIntegrationService", () => {
     });
   });
 
-  describe("appendNewReport", () => {
-    it("should append new report data successfully", async () => {
-      const reportData = {
-        date: "2024-01-02",
-        url: "https://new-example.com",
-        title: "New Example",
-        content: "Generated content",
-      };
-
-      mockGoogleSheetsService.appendData.mockResolvedValue({
-        success: true,
-        data: { spreadsheetId: "test-id", updates: { updatedRows: 1 } },
-      });
-
-      const result = await integrationService.appendNewReport(
-        "test-id",
-        "Sheet1!A:D",
-        reportData
-      );
-
-      expect(result.success).toBe(true);
-      expect(result.data?.updatedRows).toBe(1);
-      expect(mockGoogleSheetsService.appendData).toHaveBeenCalledWith(
-        "test-id",
-        "Sheet1!A:D",
-        [
-          [
-            "2024-01-02",
-            "https://new-example.com",
-            "New Example",
-            "Generated content",
-          ],
-        ]
-      );
-    });
-
-    it("should return error when append fails", async () => {
-      const reportData = {
-        date: "2024-01-02",
-        url: "https://example.com",
-        title: "Title",
-        content: "Content",
-      };
-
-      mockGoogleSheetsService.appendData.mockResolvedValue({
-        success: false,
-        error: "Append failed",
-      });
-
-      const result = await integrationService.appendNewReport(
-        "test-id",
-        "Sheet1!A:D",
-        reportData
-      );
-
-      expect(result.success).toBe(false);
-      expect(result.error).toBe("Failed to append new report: Append failed");
-    });
-  });
-
   describe("ensureDataIntegrity", () => {
     it("should validate that new data does not overwrite existing data", async () => {
       const existingData = [

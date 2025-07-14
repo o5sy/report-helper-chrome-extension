@@ -9,10 +9,7 @@ export class MessageHandler {
     this.apiOrchestrator = new ApiOrchestrator();
   }
 
-  async handleMessage(
-    message: ExtensionMessage
-    // sender: chrome.runtime.MessageSender
-  ): Promise<MessageResponse> {
+  async handleMessage(message: ExtensionMessage): Promise<MessageResponse> {
     try {
       switch (message.type) {
         case "REFINE_ANSWERS":

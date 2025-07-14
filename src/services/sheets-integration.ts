@@ -94,46 +94,6 @@ export class SheetsIntegrationService {
     }
   }
 
-  async appendNewReport(
-    spreadsheetId: string,
-    range: string,
-    reportData: ReportData
-  ): Promise<ApiResult<{ updatedRows: number }>> {
-    try {
-      const rowData = [
-        reportData.date,
-        reportData.url,
-        reportData.title,
-        reportData.content,
-      ];
-
-      const result = await this.sheetsService.appendData(spreadsheetId, range, [
-        rowData,
-      ]);
-
-      if (!result.success) {
-        return {
-          success: false,
-          error: `Failed to append new report: ${result.error}`,
-        };
-      }
-
-      return {
-        success: true,
-        data: {
-          updatedRows: result.data?.updates?.updatedRows || 0,
-        },
-      };
-    } catch (error) {
-      return {
-        success: false,
-        error: `Append operation failed: ${
-          error instanceof Error ? error.message : String(error)
-        }`,
-      };
-    }
-  }
-
   ensureDataIntegrity(
     existingData: string[][],
     newData: string[][]
