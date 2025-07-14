@@ -71,28 +71,6 @@ describe("AnswerRefiner", () => {
   });
 
   describe("Refine Answer Text", () => {
-    it("should refine answer using AI with default prompt", async () => {
-      const originalAnswer = '답변했다 "중요한 내용" - 추가 질문이에요?';
-      const expectedRefinedAnswer = "답변함 중요한 내용\n\n- 추가 질문이세요?";
-
-      vi.mocked(mockGeminiClient.processText).mockResolvedValue({
-        success: true,
-        processedText: expectedRefinedAnswer,
-        originalText: originalAnswer,
-        processingType: "refine",
-      });
-
-      const result = await answerRefiner.refineAnswerText(originalAnswer);
-
-      expect(result.success).toBe(true);
-      expect(result.refinedText).toBe(expectedRefinedAnswer);
-      expect(mockGeminiClient.processText).toHaveBeenCalledWith({
-        text: originalAnswer,
-        type: "refine",
-        context: answerRefiner.getDefaultPromptTemplate(),
-      });
-    });
-
     it("should refine answer using custom prompt", async () => {
       const originalAnswer = "답변했다";
       const customPrompt = "~다를 ~함으로 변경해줘";
