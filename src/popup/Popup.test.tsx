@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 
 import { Popup } from "./Popup";
-import React from "react";
 
 // Chrome API 모킹
 const mockChrome = {
