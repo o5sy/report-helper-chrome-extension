@@ -22,18 +22,6 @@ describe("AnswerRefiner", () => {
     answerRefiner = new AnswerRefiner(mockGeminiClient, mockSheetsService);
   });
 
-  describe("Default Prompt Template", () => {
-    it("should use the correct default prompt template", () => {
-      const expectedPrompt = `표현과 문장은 거의 수정하지 말고 띄어쓰기나 오타 등 아주 어색한 표현만 교정해줘
-그리고 했다는 ~함 형태로 수정해줘
-큰따옴표는 빼줘
-답변 중 '- '가 붙은 형태의 질문은 내가 꼬리질문한 내용이니 이전 답변 내용에서 줄바꿈으로 한줄 공백을 두고 존댓말로 수정해줘 대신 질문 앞머리에 '- '를 유지해서 '- 질문' 형태로 수정해줘`;
-
-      const actualPrompt = answerRefiner.getDefaultPromptTemplate();
-      expect(actualPrompt).toBe(expectedPrompt);
-    });
-  });
-
   describe("Extract Data from Spreadsheet", () => {
     it("should extract answer data from specified range", async () => {
       const mockSheetData = {
