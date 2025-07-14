@@ -2,7 +2,6 @@ import type { GeminiConfig, TextProcessingRequest } from "../types";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { GeminiClient } from "./gemini-client";
-import { PromptTemplateManager } from "./prompt-templates";
 import { ResponseParser } from "./response-parser";
 
 // Mock the Google GenAI module
@@ -16,7 +15,6 @@ vi.mock("@google/genai", () => ({
 
 describe("Gemini Integration", () => {
   let client: GeminiClient;
-  let promptManager: PromptTemplateManager;
   let responseParser: ResponseParser;
 
   beforeEach(() => {
@@ -28,7 +26,6 @@ describe("Gemini Integration", () => {
     };
 
     client = new GeminiClient(config);
-    promptManager = new PromptTemplateManager();
     responseParser = new ResponseParser();
   });
 
@@ -83,35 +80,6 @@ describe("Gemini Integration", () => {
     });
   });
 
-  describe("Prompt Template Integration", () => {
-    it("should create Korean refine prompt correctly", () => {
-      const prompt = promptManager.createRefinePrompt({
-        text: "샘플 텍스트",
-        language: "ko",
-        style: "formal",
-        costOptimized: true,
-      });
-
-      expect(prompt).toContain("텍스트를 정제하고 개선해주세요");
-      expect(prompt).toContain("샘플 텍스트");
-      expect(prompt).toContain("정제된 텍스트:");
-      expect(prompt).toContain("정중하고 격식있는 문체");
-    });
-
-    it("should create feedback prompt with focus areas", () => {
-      const prompt = promptManager.createFeedbackPrompt({
-        text: "분석할 내용",
-        language: "ko",
-        focusAreas: ["clarity", "structure"],
-        costOptimized: true,
-      });
-
-      expect(prompt).toContain("피드백을 제공해주세요");
-      expect(prompt).toContain("분석할 내용");
-      expect(prompt).toContain("피드백:");
-    });
-  });
-
   describe("Response Processing Integration", () => {
     it("should parse and validate response correctly", () => {
       const rawResponse = {
@@ -163,37 +131,6 @@ describe("Gemini Integration", () => {
       expect(result.success).toBe(false);
       expect(result.processedText).toBe("");
       expect(result.originalText).toBe(request.text);
-    });
-
-    it("should validate prompt options", () => {
-      expect(() => {
-        promptManager.createRefinePrompt({
-          text: "",
-          language: "ko",
-          style: "formal",
-        });
-      }).toThrow("Text is required");
-    });
-  });
-
-  describe("Cost Optimization", () => {
-    it("should use cost-optimized prompts", () => {
-      const optimizedPrompt = promptManager.createRefinePrompt({
-        text: "Sample text",
-        language: "ko",
-        style: "formal",
-        costOptimized: true,
-      });
-
-      const regularPrompt = promptManager.createRefinePrompt({
-        text: "Sample text",
-        language: "ko",
-        style: "formal",
-        costOptimized: false,
-      });
-
-      // Cost-optimized prompt should be shorter
-      expect(optimizedPrompt.length).toBeLessThan(regularPrompt.length);
     });
   });
 });

@@ -1,18 +1,14 @@
 import type {
-  FeedbackPromptOptions,
   GeminiConfig,
-  RefinePromptOptions,
   TextProcessingRequest,
   TextProcessingResponse,
 } from "../types";
 
 import { GoogleGenAI } from "@google/genai";
-import { PromptTemplateManager } from "./prompt-templates";
 
 export class GeminiClient {
   private ai: GoogleGenAI;
   private config: GeminiConfig;
-  private promptManager: PromptTemplateManager;
 
   constructor(config: GeminiConfig) {
     if (!config.apiKey || config.apiKey.trim() === "") {
@@ -29,8 +25,6 @@ export class GeminiClient {
     this.ai = new GoogleGenAI({
       apiKey: this.config.apiKey,
     });
-
-    this.promptManager = new PromptTemplateManager();
   }
 
   async processText(
@@ -84,36 +78,11 @@ export class GeminiClient {
 
     switch (type) {
       case "refine":
-        // return this.buildRefinePrompt(text, context);
         return `${context}\n\n---\n\n${text}`;
       case "feedback":
-        return this.buildFeedbackPrompt(text, context);
+        return text;
       default:
         throw new Error(`Unsupported processing type: ${type}`);
     }
-  }
-
-  private buildRefinePrompt(text: string, context?: string): string {
-    const options: RefinePromptOptions = {
-      text,
-      language: "ko",
-      style: "formal",
-      context,
-      costOptimized: true, // 비용 최적화 설정
-    };
-
-    return this.promptManager.createRefinePrompt(options);
-  }
-
-  private buildFeedbackPrompt(text: string, context?: string): string {
-    const options: FeedbackPromptOptions = {
-      text,
-      language: "ko",
-      focusAreas: ["clarity", "structure", "grammar"],
-      context,
-      costOptimized: true, // 비용 최적화 설정
-    };
-
-    return this.promptManager.createFeedbackPrompt(options);
   }
 }
