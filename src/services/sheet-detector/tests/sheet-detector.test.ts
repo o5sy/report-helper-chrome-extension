@@ -9,9 +9,6 @@ const mockChrome = {
   },
 };
 
-// @ts-expect-error - Mocking chrome for testing
-(globalThis as any).chrome = mockChrome;
-
 describe("SheetDetector", () => {
   let detector: SheetDetector;
 

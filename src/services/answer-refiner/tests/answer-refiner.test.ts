@@ -19,7 +19,12 @@ describe("AnswerRefiner", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    answerRefiner = new AnswerRefiner(mockGeminiClient, mockSheetsService);
+    answerRefiner = new AnswerRefiner({
+      apiKey: "test-api-key",
+      model: "gemini-2.0-flash",
+      maxOutputTokens: 1000,
+      temperature: 0.7,
+    });
   });
 
   describe("Extract Data from Spreadsheet", () => {

@@ -14,9 +14,6 @@ const mockChrome = {
   },
 };
 
-// @ts-expect-error - Mocking global chrome for testing
-(globalThis as any).chrome = mockChrome;
-
 describe("GoogleAuthService", () => {
   let authService: GoogleAuthService;
 
