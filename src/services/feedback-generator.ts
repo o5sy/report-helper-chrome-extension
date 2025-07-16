@@ -5,18 +5,21 @@ import type {
   FeedbackResult,
   GeminiConfig,
 } from "../types";
+import { GoogleSheetsService, GoogleSheetsServiceFactory } from "./index";
 
 import { GeminiClient } from "./gemini-client";
 import { GoogleSheetsServiceFactory } from "./index";
 
 export class FeedbackGenerator {
   private geminiClient: GeminiClient;
+  private sheetsService: GoogleSheetsService;
 
   constructor(config: GeminiConfig) {
     if (!config.apiKey || config.apiKey.trim() === "") {
       throw new Error("API key is required");
     }
     this.geminiClient = new GeminiClient(config);
+    this.sheetsService = GoogleSheetsServiceFactory.getSheetsService();
   }
 
   async generateBasicFeedback(
@@ -80,12 +83,12 @@ export class FeedbackGenerator {
         GoogleSheetsServiceFactory.getIntegrationService();
 
       // Read existing data
-      const readQuestionResult = await integrationService.readExistingReport(
+      const readQuestionResult = await this.sheetsService.readRange(
         options.spreadsheetId,
         options.sourceRange.questionRange
       );
 
-      const readAnswerResult = await integrationService.readExistingReport(
+      const readAnswerResult = await this.sheetsService.readRange(
         options.spreadsheetId,
         options.sourceRange.answerRange
       );
@@ -106,8 +109,8 @@ export class FeedbackGenerator {
         };
       }
 
-      const questionRows = readQuestionResult.data?.rows || [];
-      const answerRows = readAnswerResult.data?.rows || [];
+      const questionRows = readQuestionResult.data?.values || [];
+      const answerRows = readAnswerResult.data?.values || [];
 
       if (questionRows.length === 0 || answerRows.length === 0) {
         return {
@@ -169,7 +172,7 @@ export class FeedbackGenerator {
         const sheetsService = GoogleSheetsServiceFactory.getSheetsService();
         const feedbackValues = feedbacks.map((feedback) => [feedback]);
 
-        const writeResult = await sheetsService.updateRange(
+        const writeResult = await this.sheetsService.updateRange(
           options.spreadsheetId,
           options.targetRange,
           feedbackValues
