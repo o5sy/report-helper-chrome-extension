@@ -1,7 +1,10 @@
-import { GeminiConfig, TextProcessingRequest } from "@/types";
+import {
+  GeminiClient,
+  GeminiConfig,
+  TextProcessingRequest,
+} from "@/services/gemini-client";
 import { useEffect, useState } from "react";
 
-import { GeminiClient } from "@/services/gemini-client";
 import { GoogleAuthService } from "@/services/google-auth";
 import { GoogleSheetsService } from "@/services/google-sheets";
 

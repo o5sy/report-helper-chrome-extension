@@ -1,7 +1,9 @@
-import type { GeminiConfig, TextProcessingRequest } from "@/types";
+import {
+  GeminiClient,
+  GeminiConfig,
+  TextProcessingRequest,
+} from "@/services/gemini-client";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-
-import { GeminiClient } from "@/services/gemini-client";
 
 // Mock the Google GenAI module
 vi.mock("@google/genai", () => ({

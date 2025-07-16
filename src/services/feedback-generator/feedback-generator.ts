@@ -1,12 +1,11 @@
-import type {
+import {
   BasicFeedbackRequest,
   BatchFeedbackOptions,
   BatchFeedbackResult,
   FeedbackResult,
-  GeminiConfig,
-} from "@/types";
+} from "./types";
+import { GeminiClient, GeminiConfig } from "@/services/gemini-client";
 
-import { GeminiClient } from "@/services/gemini-client";
 import { GoogleServiceFactory } from "@/services/google-service-factory";
 import { GoogleSheetsService } from "@/services/google-sheets";
 

@@ -1,8 +1,4 @@
-export interface SheetInfo {
-  spreadsheetId: string | null;
-  sheetName: string;
-  url: string;
-}
+import { SheetInfo } from "./types";
 
 export class SheetDetector {
   /**

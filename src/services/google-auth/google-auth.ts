@@ -1,10 +1,6 @@
 /// <reference types="chrome"/>
 
-export interface AuthResult {
-  success: boolean;
-  token?: string;
-  error?: string;
-}
+import { AuthResult } from "./types";
 
 export class GoogleAuthService {
   private readonly scopes = ["https://www.googleapis.com/auth/spreadsheets"];

@@ -1,12 +1,14 @@
+import {
+  AnswerRefiner,
+  BatchRefinementOptions,
+  BatchRefinementResult,
+} from "@/services/answer-refiner";
 import type {
   BatchFeedbackOptions,
   BatchFeedbackResult,
-  BatchRefinementOptions,
-  BatchRefinementResult,
-} from "../types";
+} from "@/services/feedback-generator";
 
-import { AnswerRefiner } from "../services/answer-refiner";
-import { FeedbackGenerator } from "../services/feedback-generator";
+import { FeedbackGenerator } from "@/services/feedback-generator";
 
 export class ApiOrchestrator {
   private answerRefiner?: AnswerRefiner;

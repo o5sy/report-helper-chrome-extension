@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import type { BatchFeedbackResult } from "../../types";
+import type { BatchFeedbackResult } from "@/services/feedback-generator";
 
 interface FeedbackTestProps {
   geminiApiKey: string;
