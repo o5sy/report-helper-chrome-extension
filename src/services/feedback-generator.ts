@@ -8,7 +8,6 @@ import type {
 import { GoogleSheetsService, GoogleSheetsServiceFactory } from "./index";
 
 import { GeminiClient } from "./gemini-client";
-import { GoogleSheetsServiceFactory } from "./index";
 
 export class FeedbackGenerator {
   private geminiClient: GeminiClient;
@@ -28,7 +27,6 @@ export class FeedbackGenerator {
     const startTime = Date.now();
 
     try {
-      // Validate input
       if (!request.question?.trim() || !request.answer?.trim()) {
         return {
           success: false,
@@ -38,10 +36,10 @@ export class FeedbackGenerator {
 
       const prompt = this.buildBasicFeedbackPrompt(request);
 
+      // TODO processText 단일 인자값을 받도록 수정(text, context -> prompt)
       const response = await this.geminiClient.processText({
-        text: prompt,
         type: "feedback",
-        context: request.context,
+        text: prompt,
       });
 
       if (!response.success) {
@@ -79,9 +77,6 @@ export class FeedbackGenerator {
     options: BatchFeedbackOptions
   ): Promise<BatchFeedbackResult> {
     try {
-      const integrationService =
-        GoogleSheetsServiceFactory.getIntegrationService();
-
       // Read existing data
       const readQuestionResult = await this.sheetsService.readRange(
         options.spreadsheetId,
@@ -154,7 +149,7 @@ export class FeedbackGenerator {
         const feedbackResult = await this.generateBasicFeedback({
           question,
           answer,
-          language: "ko",
+          customPrompt: options.customPrompt,
         });
 
         if (feedbackResult.success) {
@@ -169,7 +164,6 @@ export class FeedbackGenerator {
 
       // Write feedbacks to target range
       if (feedbacks.length > 0) {
-        const sheetsService = GoogleSheetsServiceFactory.getSheetsService();
         const feedbackValues = feedbacks.map((feedback) => [feedback]);
 
         const writeResult = await this.sheetsService.updateRange(
@@ -214,55 +208,38 @@ export class FeedbackGenerator {
     }
   }
 
-  private buildBasicFeedbackPrompt(request: BasicFeedbackRequest): string {
-    const { question, answer, language, context } = request;
+  private buildBasicFeedbackPrompt({
+    question,
+    answer,
+    customPrompt,
+  }: BasicFeedbackRequest): string {
+    let prompt = `주어진 질문과 답변에 대해 건설적인 피드백을 제공해주세요.
 
-    if (language === "ko") {
-      let prompt =
-        "다음 질문과 답변에 대해 건설적인 피드백을 제공해주세요.\n\n";
-      prompt += `질문: ${question}\n`;
-      prompt += `답변: ${answer}\n\n`;
+    질문: ${question}
+    답변: ${answer}\n\n`;
 
-      if (context) {
-        prompt += `컨텍스트: ${context}\n\n`;
-      }
-
-      prompt += "피드백 요구사항:\n";
-      prompt += "1. 잘한 점과 아쉬운 점을 균형있게 포함\n";
-      prompt += "2. 기술적 측면과 협업 측면에서의 세부 피드백\n";
-      prompt += "3. 구체적이고 실행 가능한 개선 방안 제시\n";
-      prompt += "4. 응답은 한글 기준 500자 내외로 작성\n";
-      prompt += "5. 마크다운 형식을 사용하지 말고 일반 텍스트로만 작성\n\n";
-      prompt += "피드백 형식:\n";
-      prompt += "잘한 점:\n";
-      prompt += "- 기술적 측면\n";
-      prompt += "- 협업 측면\n\n";
-      prompt += "아쉬운 점:\n";
-      prompt += "- 기술적 측면\n";
-      prompt += "- 협업 측면\n\n";
-      prompt += "개선 방안:\n";
-      prompt += "- 구체적인 실행 방안";
-
-      return prompt;
+    if (customPrompt) {
+      prompt += `## 피드백 요구사항:\n${customPrompt}`;
     } else {
-      let prompt =
-        "Please provide constructive feedback for the following question and answer.\n\n";
-      prompt += `Question: ${question}\n`;
-      prompt += `Answer: ${answer}\n\n`;
+      prompt += `
+      ## 피드백 요구사항:
+      1. 잘한 점과 아쉬운 점을 균형있게 포함
+      2. 기술적 측면과 협업 측면에서의 세부 피드백
+      3. 구체적이고 실행 가능한 개선 방안 제시
+      4. 응답은 한글 기준 400자 내외로 작성
+      5. 마크다운 형식을 사용하지 말고 일반 텍스트로만 작성
 
-      if (context) {
-        prompt += `Context: ${context}\n\n`;
-      }
-
-      prompt += "Feedback criteria:\n";
-      prompt += "- Accuracy and completeness of content\n";
-      prompt += "- Clarity and specificity of the answer\n";
-      prompt += "- Logical structure and flow\n";
-      prompt += "- Suggestions for improvement\n";
-      prompt += "- Use plain text format without markdown formatting\n\n";
-      prompt += "Feedback:";
-
-      return prompt;
+      ## 피드백 형식:
+      잘한 점:
+      - 기술적 측면
+      - 협업 측면
+      아쉬운 점:
+      - 기술적 측면
+      - 협업 측면
+      개선 방안:
+      - 구체적인 실행 방안`;
     }
+
+    return prompt;
   }
 }

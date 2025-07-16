@@ -59,7 +59,6 @@ describe("FeedbackGenerator", () => {
       const result = await feedbackGenerator.generateBasicFeedback({
         question: "JavaScript의 장점은 무엇인가요?",
         answer: "JavaScript는 웹 개발에서 널리 사용되는 언어입니다.",
-        language: "ko",
       });
 
       expect(result.success).toBe(true);
@@ -84,7 +83,6 @@ describe("FeedbackGenerator", () => {
       const result = await feedbackGenerator.generateBasicFeedback({
         question: "Test question",
         answer: "Test answer",
-        language: "ko",
       });
 
       expect(result.success).toBe(false);
@@ -95,7 +93,6 @@ describe("FeedbackGenerator", () => {
       const result = await feedbackGenerator.generateBasicFeedback({
         question: "",
         answer: "Test answer",
-        language: "ko",
       });
 
       expect(result.success).toBe(false);
@@ -119,7 +116,6 @@ describe("FeedbackGenerator", () => {
       const result = await feedbackGenerator.generateBasicFeedback({
         question: "What are the advantages of JavaScript?",
         answer: "JavaScript is a widely used language in web development.",
-        language: "en",
       });
 
       expect(result.success).toBe(true);

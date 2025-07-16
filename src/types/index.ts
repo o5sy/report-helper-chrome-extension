@@ -148,6 +148,7 @@ export interface GeminiApiError {
 }
 
 // Prompt Template Types
+// TODO 삭제
 export type PromptLanguage = "ko" | "en";
 export type PromptStyle = "formal" | "casual" | "academic" | "business";
 export type FocusArea =
@@ -286,8 +287,7 @@ export interface BatchRefinementResult {
 export interface BasicFeedbackRequest {
   question: string;
   answer: string;
-  language: PromptLanguage;
-  context?: string;
+  customPrompt?: string;
 }
 
 export interface PersonalizedFeedbackRequest {
