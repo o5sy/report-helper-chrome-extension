@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { SheetDetector } from "../content/sheet-detector";
+import { SheetDetector } from "@/services/sheet-detector";
 
 // Mock chrome runtime
 const mockChrome = {
