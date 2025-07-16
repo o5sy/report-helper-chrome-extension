@@ -1,5 +1,5 @@
-import { GoogleAuthService } from "./google-auth";
-import { GoogleSheetsService } from "./google-sheets";
+import { GoogleAuthService } from "@/services/google-auth";
+import { GoogleSheetsService } from "@/services/google-sheets";
 
 export class GoogleSheetsServiceFactory {
   private static authService: GoogleAuthService;

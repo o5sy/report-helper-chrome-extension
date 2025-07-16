@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import type { AuthResult } from "./google-auth";
-import { GoogleSheetsService } from "./google-sheets";
+import type { AuthResult } from "@/services/google-auth";
+import { GoogleSheetsService } from "@/services/google-sheets";
 
 const mockGoogleAuthService = {
   getAccessToken: vi.fn(),
