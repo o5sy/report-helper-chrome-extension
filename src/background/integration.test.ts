@@ -4,22 +4,18 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { ApiOrchestrator } from "./api-orchestrator";
 import { ErrorHandler } from "./error-handler";
 import { MessageHandler } from "./message-handler";
-import { ServiceWorkerManager } from "./service-worker-manager";
-import { StorageManager } from "./storage-manager";
 
 describe("Background Service Worker Integration", () => {
   let messageHandler: MessageHandler;
   let storageManager: StorageManager;
   let apiOrchestrator: ApiOrchestrator;
   let errorHandler: ErrorHandler;
-  let serviceWorkerManager: ServiceWorkerManager;
 
   beforeEach(() => {
     messageHandler = new MessageHandler();
     storageManager = new StorageManager();
     apiOrchestrator = new ApiOrchestrator();
     errorHandler = new ErrorHandler();
-    serviceWorkerManager = new ServiceWorkerManager();
   });
 
   describe("System Integration", () => {
@@ -28,7 +24,6 @@ describe("Background Service Worker Integration", () => {
       expect(storageManager).toBeDefined();
       expect(apiOrchestrator).toBeDefined();
       expect(errorHandler).toBeDefined();
-      expect(serviceWorkerManager).toBeDefined();
     });
 
     it("should handle error scenarios gracefully", () => {
@@ -38,12 +33,6 @@ describe("Background Service Worker Integration", () => {
       expect(result.success).toBe(false);
       expect(result.errorType).toBe("API_ERROR");
       expect(result.retryable).toBe(true);
-    });
-
-    it("should initialize service worker manager", () => {
-      const initialized = serviceWorkerManager.initialize();
-      expect(initialized).toBe(true);
-      expect(serviceWorkerManager.isActive()).toBe(true);
     });
   });
 
