@@ -125,7 +125,6 @@ const FeedbackTest: React.FC<FeedbackTestProps> = ({
             answerRange,
           },
           targetRange: targetRange,
-          apiKey: geminiApiKey,
         },
       });
 
