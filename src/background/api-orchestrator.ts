@@ -180,6 +180,7 @@ export class ApiOrchestrator {
     }
   }
 
+  // TODO 데이터 접근 계층 별도로 분리
   private async getGeminiApiKey(): Promise<string | null> {
     try {
       // Get API key from Chrome storage
