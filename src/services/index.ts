@@ -41,6 +41,6 @@ export type {
 // Export classes for direct use if needed
 export { AnswerRefiner } from "./answer-refiner";
 export { FeedbackGenerator } from "./feedback-generator";
-export { GeminiClient } from "./gemini-client";
+export { GeminiClient } from "@/services/gemini-client";
 export { GoogleAuthService } from "./google-auth";
 export { GoogleSheetsService } from "./google-sheets";

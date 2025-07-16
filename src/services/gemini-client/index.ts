@@ -2,7 +2,7 @@ import type {
   GeminiConfig,
   TextProcessingRequest,
   TextProcessingResponse,
-} from "../types";
+} from "@/types";
 
 import { GoogleGenAI } from "@google/genai";
 
