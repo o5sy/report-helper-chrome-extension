@@ -1,5 +1,5 @@
 /// <reference types="chrome"/>
-import { MessageHandler } from "./message-handler/message-handler";
+import { MessageHandler } from "@/background/message-handler";
 
 console.log("Report Generator background service worker loaded");
 
