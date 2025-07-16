@@ -5,9 +5,10 @@ import type {
   FeedbackResult,
   GeminiConfig,
 } from "../types";
-import { GoogleSheetsService, GoogleSheetsServiceFactory } from "./index";
 
-import { GeminiClient } from "./gemini-client";
+import { GeminiClient } from "@/services/gemini-client";
+import { GoogleSheetsService } from "@/services/google-sheets";
+import { GoogleSheetsServiceFactory } from "@/services/index";
 
 export class FeedbackGenerator {
   private geminiClient: GeminiClient;
