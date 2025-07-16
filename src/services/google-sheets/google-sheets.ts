@@ -1,4 +1,4 @@
-import type { GoogleAuthService } from "./google-auth";
+import type { GoogleAuthService } from "@/services/google-auth";
 
 export interface ApiResult<T = unknown> {
   success: boolean;

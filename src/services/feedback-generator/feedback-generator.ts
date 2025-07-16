@@ -4,11 +4,11 @@ import type {
   BatchFeedbackResult,
   FeedbackResult,
   GeminiConfig,
-} from "../types";
+} from "@/types";
 
 import { GeminiClient } from "@/services/gemini-client";
+import { GoogleServiceFactory } from "@/services/google-service-factory";
 import { GoogleSheetsService } from "@/services/google-sheets";
-import { GoogleSheetsServiceFactory } from "@/services/index";
 
 export class FeedbackGenerator {
   private geminiClient: GeminiClient;
@@ -19,7 +19,7 @@ export class FeedbackGenerator {
       throw new Error("API key is required");
     }
     this.geminiClient = new GeminiClient(config);
-    this.sheetsService = GoogleSheetsServiceFactory.getSheetsService();
+    this.sheetsService = GoogleServiceFactory.getSheetsService();
   }
 
   async generateBasicFeedback(
