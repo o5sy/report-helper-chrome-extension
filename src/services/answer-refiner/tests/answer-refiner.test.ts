@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { AnswerRefiner } from "./index";
-import type { GeminiClient } from "../gemini-client";
-import type { GoogleSheetsService } from "../google-sheets";
+import { AnswerRefiner } from "@/services/answer-refiner";
+import type { GeminiClient } from "../../gemini-client";
+import type { GoogleSheetsService } from "../../google-sheets";
 
 // Mock dependencies
 const mockGeminiClient = {
