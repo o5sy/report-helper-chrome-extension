@@ -1,7 +1,10 @@
-import { GeminiConfig, TextProcessingRequest } from "@/types";
+import {
+  GeminiClient,
+  GeminiConfig,
+  TextProcessingRequest,
+} from "@/services/gemini-client";
 import { useEffect, useState } from "react";
 
-import { GeminiClient } from "@/services/gemini-client";
 import { GoogleAuthService } from "@/services/google-auth";
 import { GoogleSheetsService } from "@/services/google-sheets";
 
@@ -61,7 +64,7 @@ function TestContents({ geminiApiKey }: TestContentsProps) {
       const client = new GeminiClient(config);
 
       const testRequest: TextProcessingRequest = {
-        text: "안녕하세요. 이것은 Gemini API 연동 테스트입니다.",
+        prompt: "안녕하세요. 이것은 Gemini API 연동 테스트입니다.",
         type: "refine",
       };
 

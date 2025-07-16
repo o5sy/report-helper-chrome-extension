@@ -23,7 +23,7 @@ export const useUseGeminiApiKey = () => {
     loadGeminiApiKey();
   }, []);
 
-  const changeGeminiApiKey = async (value: string) => {
+  const updateGeminiApiKey = async (value: string) => {
     setGeminiApiKey(value);
 
     try {
@@ -35,5 +35,5 @@ export const useUseGeminiApiKey = () => {
     }
   };
 
-  return { geminiApiKey, changeGeminiApiKey };
+  return { geminiApiKey, updateGeminiApiKey };
 };
