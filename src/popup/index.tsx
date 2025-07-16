@@ -1,4 +1,4 @@
-import "../styles/globals.css";
+import "./styles/globals.css";
 
 import { Popup } from "./Popup";
 import { createRoot } from "react-dom/client";
