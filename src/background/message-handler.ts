@@ -69,7 +69,6 @@ export class MessageHandler {
           answerRange: message.payload.sourceRange.answerRange,
         },
         targetRange: message.payload.targetRange,
-        apiKey: message.payload.apiKey,
       });
 
       return {

@@ -13,7 +13,7 @@ import SheetIdReadonlyInput from "./components/sheet-id-readonly-input";
 export function Popup() {
   const { selectedTab, onChangeSelectedTab } = useUseSelectedTab();
 
-  const { geminiApiKey, changeGeminiApiKey } = useUseGeminiApiKey();
+  const { geminiApiKey, updateGeminiApiKey } = useUseGeminiApiKey();
   const { spreadsheetId } = useUseSpreadSheetId();
 
   return (
@@ -21,7 +21,7 @@ export function Popup() {
       <h1 className="text-xl font-bold mb-4">Report Generator</h1>
 
       {/* gemini api key input */}
-      <GeminiApiKeyInput apiKey={geminiApiKey} onChange={changeGeminiApiKey} />
+      <GeminiApiKeyInput apiKey={geminiApiKey} onChange={updateGeminiApiKey} />
 
       {/* sheet id input */}
       <SheetIdReadonlyInput spreadsheetId={spreadsheetId} />

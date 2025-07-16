@@ -54,7 +54,6 @@ export interface GenerateFeedbackMessage {
       answerRange: string;
     };
     targetRange: string;
-    apiKey: string;
   };
 }
 

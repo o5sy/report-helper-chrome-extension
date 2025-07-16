@@ -8,9 +8,6 @@ import type {
 
 import { AnswerRefiner } from "../services/answer-refiner";
 import { FeedbackGenerator } from "../services/feedback-generator";
-import { GeminiClient } from "../services/gemini-client";
-import { GoogleAuthService } from "../services/google-auth";
-import { GoogleSheetsService } from "../services/google-sheets";
 
 export interface ReportRequest {
   url: string;
@@ -143,15 +140,23 @@ export class ApiOrchestrator {
   }
 
   async generateFeedback(
-    options: BatchFeedbackOptions & { apiKey: string }
+    options: BatchFeedbackOptions
   ): Promise<BatchFeedbackResult> {
     try {
       if (!this.feedbackGenerator) {
+        const geminiApiKey = await this.getGeminiApiKey();
+        if (!geminiApiKey) {
+          return {
+            success: false,
+            processedCount: 0,
+            successCount: 0,
+            errorCount: 1,
+            errors: ["Gemini API key not configured"],
+          };
+        }
+
         this.feedbackGenerator = new FeedbackGenerator({
-          apiKey: options.apiKey,
-          model: "gemini-2.0-flash",
-          maxOutputTokens: 1000,
-          temperature: 0.7,
+          apiKey: geminiApiKey,
         });
       }
 

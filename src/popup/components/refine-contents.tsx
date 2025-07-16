@@ -76,9 +76,6 @@ function RefineContents({ geminiApiKey, spreadsheetId }: RefineContentsProps) {
       setRefinementResult("답변 정제 작업을 시작합니다...");
       setProcessingTime(null);
 
-      // Store API key in sync storage for background script
-      await window.chrome.storage.sync.set({ geminiApiKey });
-
       const message: RefineAnswersMessage = {
         type: "REFINE_ANSWERS",
         payload: {
