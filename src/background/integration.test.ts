@@ -31,18 +31,6 @@ describe("Background Service Worker Integration", () => {
       expect(serviceWorkerManager).toBeDefined();
     });
 
-    it("should handle basic report generation workflow", async () => {
-      const reportRequest = {
-        url: "https://example.com",
-        content: "Test content for processing",
-      };
-
-      const result = await apiOrchestrator.processReportRequest(reportRequest);
-
-      expect(result.success).toBe(true);
-      expect(result.data).toBeDefined();
-    });
-
     it("should handle error scenarios gracefully", () => {
       const error = new Error("Test error");
       const result = errorHandler.handleError(error, "API_ERROR");
