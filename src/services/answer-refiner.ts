@@ -2,18 +2,25 @@ import type {
   AnswerData,
   BatchRefinementOptions,
   BatchRefinementResult,
+  GeminiConfig,
   RefinementResult,
   WriteResult,
 } from "../types";
+import { GoogleSheetsService, GoogleSheetsServiceFactory } from "./index";
 
-import type { GeminiClient } from "./gemini-client";
-import type { GoogleSheetsService } from "./google-sheets";
+import { GeminiClient } from "./gemini-client";
 
 export class AnswerRefiner {
-  constructor(
-    private geminiClient: GeminiClient,
-    private sheetsService: GoogleSheetsService
-  ) {}
+  private geminiClient: GeminiClient;
+  private sheetsService: GoogleSheetsService;
+
+  constructor(config: GeminiConfig) {
+    if (!config.apiKey || config.apiKey.trim() === "") {
+      throw new Error("API key is required");
+    }
+    this.geminiClient = new GeminiClient(config);
+    this.sheetsService = GoogleSheetsServiceFactory.getSheetsService();
+  }
 
   async extractAnswerData(
     spreadsheetId: string,

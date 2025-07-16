@@ -112,7 +112,6 @@ export class ApiOrchestrator {
   ): Promise<BatchRefinementResult> {
     try {
       if (!this.answerRefiner) {
-        // Initialize services if not already done
         const geminiApiKey = await this.getGeminiApiKey();
         if (!geminiApiKey) {
           return {
@@ -124,11 +123,9 @@ export class ApiOrchestrator {
           };
         }
 
-        const geminiClient = new GeminiClient({ apiKey: geminiApiKey });
-        const authService = new GoogleAuthService();
-        const sheetsService = new GoogleSheetsService(authService);
-
-        this.answerRefiner = new AnswerRefiner(geminiClient, sheetsService);
+        this.answerRefiner = new AnswerRefiner({
+          apiKey: geminiApiKey,
+        });
       }
 
       return await this.answerRefiner.processBatchRefinement(options);
