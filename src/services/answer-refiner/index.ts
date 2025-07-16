@@ -5,10 +5,10 @@ import type {
   GeminiConfig,
   RefinementResult,
   WriteResult,
-} from "../types";
-import { GoogleSheetsService, GoogleSheetsServiceFactory } from "./index";
+} from "../../types";
+import { GoogleSheetsService, GoogleSheetsServiceFactory } from "../index";
 
-import { GeminiClient } from "./gemini-client";
+import { GeminiClient } from "../gemini-client";
 
 export class AnswerRefiner {
   private geminiClient: GeminiClient;
