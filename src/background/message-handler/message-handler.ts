@@ -1,6 +1,6 @@
-import type { ExtensionMessage, MessageResponse } from "../types";
+import { ExtensionMessage, MessageResponse } from "./types";
 
-import { ApiOrchestrator } from "./api-orchestrator";
+import { ApiOrchestrator } from "@/background/api-orchestrator";
 
 export class MessageHandler {
   private apiOrchestrator: ApiOrchestrator;
