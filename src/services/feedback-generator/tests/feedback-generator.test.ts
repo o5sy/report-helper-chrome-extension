@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { FeedbackGenerator } from "./feedback-generator";
-import type { GeminiConfig } from "../types";
+import { FeedbackGenerator } from "../";
+import type { GeminiConfig } from "@/types";
 
 // Mock the Google GenAI module
 vi.mock("@google/genai", () => ({
