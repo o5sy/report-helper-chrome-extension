@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { GoogleAuthService } from "./google-auth";
+import { GoogleAuthService } from "../";
 
 // Mock Chrome Identity API
 const mockChrome = {
