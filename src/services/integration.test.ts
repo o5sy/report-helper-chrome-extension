@@ -29,9 +29,8 @@ describe("Gemini Integration", () => {
   describe("End-to-End Text Processing", () => {
     it("should process text refinement request successfully", async () => {
       const request: TextProcessingRequest = {
-        text: "이 텍스트를 정제해주세요.",
+        prompt: "이 텍스트를 정제해주세요.\n\nBusiness document",
         type: "refine",
-        context: "Business document",
       };
 
       const mockResponse = {
@@ -55,7 +54,7 @@ describe("Gemini Integration", () => {
 
     it("should process feedback request successfully", async () => {
       const request: TextProcessingRequest = {
-        text: "피드백을 요청하는 문서입니다.",
+        prompt: "피드백을 요청하는 문서입니다.",
         type: "feedback",
       };
 
@@ -80,7 +79,7 @@ describe("Gemini Integration", () => {
   describe("Error Handling", () => {
     it("should handle API errors gracefully", async () => {
       const request: TextProcessingRequest = {
-        text: "Test text",
+        prompt: "Test text",
         type: "refine",
       };
 
@@ -93,7 +92,7 @@ describe("Gemini Integration", () => {
 
       expect(result.success).toBe(false);
       expect(result.processedText).toBe("");
-      expect(result.originalText).toBe(request.text);
+      expect(result.originalText).toBe(request.prompt);
     });
   });
 });

@@ -61,7 +61,7 @@ function TestContents({ geminiApiKey }: TestContentsProps) {
       const client = new GeminiClient(config);
 
       const testRequest: TextProcessingRequest = {
-        text: "안녕하세요. 이것은 Gemini API 연동 테스트입니다.",
+        prompt: "안녕하세요. 이것은 Gemini API 연동 테스트입니다.",
         type: "refine",
       };
 

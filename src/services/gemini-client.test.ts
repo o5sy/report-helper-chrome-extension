@@ -41,7 +41,7 @@ describe("GeminiClient", () => {
   describe("processText", () => {
     it("should refine text successfully", async () => {
       const request: TextProcessingRequest = {
-        text: "This is sample text to refine.",
+        prompt: "This is sample text to refine.",
         type: "refine",
       };
 
@@ -59,7 +59,7 @@ describe("GeminiClient", () => {
 
       expect(result.success).toBe(true);
       expect(result.processedText).toBe(mockResponse.text);
-      expect(result.originalText).toBe(request.text);
+      expect(result.originalText).toBe(request.prompt);
       expect(result.processingType).toBe("refine");
       expect(result.metadata?.tokensUsed).toBe(25);
       expect(mockGenerateContent).toHaveBeenCalledTimes(1);
@@ -67,7 +67,7 @@ describe("GeminiClient", () => {
 
     it("should generate feedback successfully", async () => {
       const request: TextProcessingRequest = {
-        text: "This is sample content for feedback.",
+        prompt: "This is sample content for feedback.",
         type: "feedback",
       };
 
@@ -89,7 +89,7 @@ describe("GeminiClient", () => {
 
     it("should handle API errors gracefully", async () => {
       const request: TextProcessingRequest = {
-        text: "Test text",
+        prompt: "Test text",
         type: "refine",
       };
 
@@ -103,7 +103,7 @@ describe("GeminiClient", () => {
 
       expect(result.success).toBe(false);
       expect(result.processedText).toBe("");
-      expect(result.originalText).toBe(request.text);
+      expect(result.originalText).toBe(request.prompt);
     });
   });
 });

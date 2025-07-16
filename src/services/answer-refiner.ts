@@ -10,22 +10,6 @@ import type { GeminiClient } from "./gemini-client";
 import type { GoogleSheetsService } from "./google-sheets";
 
 export class AnswerRefiner {
-  private readonly DEFAULT_PROMPT = `주어진 텍스트는 학생의 모의 면접 답변을 멘토가 타이핑한 메모입니다. 다음 지침에 따라 텍스트를 수정해 주세요. 그리고 답변은 수정한 텍스트 외의 다른 내용은 절대 포함하지 마세요. : 
-
-1. 표현 및 문장 유지: 
-  * 학생의 원래 표현과 문장 구조는 최대한 유지해 주세요. 
-  * 내용의 의미가 바뀌지 않는 선에서 띄어쓰기, 오타, 아주 어색한 비문만 교정해 주세요. 
-  * 단, 언디파인드(undefined), 자스(javascript), 타스(typescript), 바(var), 렛(let), 콘스트(const) 등의 기술 용어만 영문으로 수정해주세요.
-  * 기술 용어 영문으로 수정 시 텍스트만 수정하고, **별도 기호는 넣지 마세요.**
-2. 어미 변경: 꼬리 질문을 제외한 모든 '했다', '했습니다' 등의 서술어를 '~함.' 형태로 변경해 주세요. (예: "발표를 했다" → "발표를 했음.")
-3. 꼬리 질문 처리 (필요한 경우에만 적용):
-  * 만약 '- '로 시작하는 문장이 있다면, 이는 멘토의 꼬리 질문입니다.
-  * 꼬리 질문은 실제 면접관이 묻는 것처럼 자연스럽고 완성된 문장으로 수정해 주세요. (예: "- ux개선 어던부분?" → "- UX 개선을 했다면 어떤 부분을 하셨나요?")
-  * 꼬리 질문 이전에 **정확히 한 줄의 공백**을 두고 배치해 주세요.
-  * **주의: 주어진 텍스트에 꼬리 질문이 없다면, 어떠한 질문도 추가하거나 생성하지 마세요.**
-
-이 지침을 철저히 따라 텍스트를 수정해 주시기 바랍니다.`;
-
   constructor(
     private geminiClient: GeminiClient,
     private sheetsService: GoogleSheetsService
@@ -83,12 +67,11 @@ export class AnswerRefiner {
     customPrompt?: string
   ): Promise<RefinementResult> {
     try {
-      const prompt = customPrompt || this.DEFAULT_PROMPT;
+      const prompt = this.buildRefinePrompt(text, customPrompt);
 
       const result = await this.geminiClient.processText({
-        text,
+        prompt,
         type: "refine",
-        context: prompt,
       });
 
       if (!result.success) {
@@ -261,5 +244,31 @@ export class AnswerRefiner {
         ],
       };
     }
+  }
+
+  private buildRefinePrompt(text: string, customPrompt?: string): string {
+    let prompt =
+      customPrompt ||
+      `주어진 텍스트는 학생의 모의 면접 답변을 멘토가 타이핑한 메모입니다. 다음 지침에 따라 텍스트를 수정해 주세요. 그리고 답변은 수정한 텍스트 외의 다른 내용은 절대 포함하지 마세요. :
+
+1. 표현 및 문장 유지:
+  * 학생의 원래 표현과 문장 구조는 최대한 유지해 주세요.
+  * 내용의 의미가 바뀌지 않는 선에서 띄어쓰기, 오타, 아주 어색한 비문만 교정해 주세요.
+  * 단, 언디파인드(undefined), 자스(javascript), 타스(typescript), 바(var), 렛(let), 콘스트(const) 등의 기술 용어만 영문으로 수정해주세요.
+  * 기술 용어 영문으로 수정 시 텍스트만 수정하고, **별도 기호는 넣지 마세요.**
+2. 어미 변경:
+  * '했다', '했습니다' 등의 서술어를 '~함.' 형태로 변경해 주세요. (예: "발표를 했다" → "발표를 했음.")
+  * **주의: 꼬리 질문을 제외한 문장의 서술어에만 적용하세요.**
+3. 꼬리 질문 처리 (필요한 경우에만 적용):
+  * 만약 '- '로 시작하는 문장이 있다면, 이는 멘토의 꼬리 질문입니다.
+  * 꼬리 질문은 실제 면접관이 묻는 것처럼 자연스럽고 완성된 문장으로 수정해 주세요. (예: "- ux개선 어던부분?" → "- UX 개선을 했다면 어떤 부분을 하셨나요?")
+  * 꼬리 질문 이전에 **정확히 한 줄의 공백**을 두고 배치해 주세요.
+  * **주의: 주어진 텍스트에 꼬리 질문이 없다면, 어떠한 질문도 추가하거나 생성하지 마세요.**
+
+이 지침을 철저히 따라 텍스트를 수정해 주시기 바랍니다.`;
+
+    prompt += `\n\n---\n\n${text}`;
+
+    return prompt;
   }
 }

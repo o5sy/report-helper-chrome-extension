@@ -34,12 +34,12 @@ export class FeedbackGenerator {
         };
       }
 
-      const prompt = this.buildBasicFeedbackPrompt(request);
+      const prompt = this.buildFeedbackPrompt(request);
 
       // TODO processText 단일 인자값을 받도록 수정(text, context -> prompt)
       const response = await this.geminiClient.processText({
         type: "feedback",
-        text: prompt,
+        prompt,
       });
 
       if (!response.success) {
@@ -208,7 +208,7 @@ export class FeedbackGenerator {
     }
   }
 
-  private buildBasicFeedbackPrompt({
+  private buildFeedbackPrompt({
     question,
     answer,
     customPrompt,

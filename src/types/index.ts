@@ -125,9 +125,8 @@ export interface GeminiConfig {
 }
 
 export interface TextProcessingRequest {
-  text: string;
+  prompt: string;
   type: "refine" | "feedback";
-  context?: string;
 }
 
 export interface TextProcessingResponse {

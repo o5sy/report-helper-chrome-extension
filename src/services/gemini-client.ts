@@ -33,11 +33,9 @@ export class GeminiClient {
     const startTime = Date.now();
 
     try {
-      const prompt = this.buildPrompt(request);
-
       const response = await this.ai.models.generateContent({
         model: this.config.model!,
-        contents: prompt,
+        contents: request.prompt,
         config: {
           maxOutputTokens: this.config.maxOutputTokens,
           temperature: this.config.temperature,
@@ -51,7 +49,7 @@ export class GeminiClient {
       return {
         success: true,
         processedText,
-        originalText: request.text,
+        originalText: request.prompt,
         processingType: request.type,
         metadata: {
           tokensUsed,
@@ -64,25 +62,12 @@ export class GeminiClient {
       return {
         success: false,
         processedText: "",
-        originalText: request.text,
+        originalText: request.prompt,
         processingType: request.type,
         metadata: {
           processingTime: Date.now() - startTime,
         },
       };
-    }
-  }
-
-  private buildPrompt(request: TextProcessingRequest): string {
-    const { text, type, context } = request;
-
-    switch (type) {
-      case "refine":
-        return `${context}\n\n---\n\n${text}`;
-      case "feedback":
-        return text;
-      default:
-        throw new Error(`Unsupported processing type: ${type}`);
     }
   }
 }
