@@ -1,11 +1,9 @@
 import { GoogleAuthService } from "./google-auth";
 import { GoogleSheetsService } from "./google-sheets";
-import { SheetsIntegrationService } from "./sheets-integration";
 
 export class GoogleSheetsServiceFactory {
   private static authService: GoogleAuthService;
   private static sheetsService: GoogleSheetsService;
-  private static integrationService: SheetsIntegrationService;
 
   static getAuthService(): GoogleAuthService {
     if (!this.authService) {
@@ -19,16 +17,6 @@ export class GoogleSheetsServiceFactory {
       this.sheetsService = new GoogleSheetsService(this.getAuthService());
     }
     return this.sheetsService;
-  }
-
-  static getIntegrationService(): SheetsIntegrationService {
-    if (!this.integrationService) {
-      this.integrationService = new SheetsIntegrationService(
-        this.getSheetsService(),
-        this.getAuthService()
-      );
-    }
-    return this.integrationService;
   }
 
   static async isReady(): Promise<boolean> {
@@ -45,21 +33,14 @@ export class GoogleSheetsServiceFactory {
 export type { AuthResult } from "./google-auth";
 export type {
   ApiResult,
-  SpreadsheetMetadata,
-  RangeData,
   AppendResult,
+  RangeData,
+  SpreadsheetMetadata,
 } from "./google-sheets";
-export type {
-  AccessValidationResult,
-  ReportData,
-  ParsedSpreadsheetData,
-  DataIntegrityResult,
-} from "./sheets-integration";
 
 // Export classes for direct use if needed
+export { AnswerRefiner } from "./answer-refiner";
+export { FeedbackGenerator } from "./feedback-generator";
 export { GeminiClient } from "./gemini-client";
 export { GoogleAuthService } from "./google-auth";
 export { GoogleSheetsService } from "./google-sheets";
-export { SheetsIntegrationService } from "./sheets-integration";
-export { AnswerRefiner } from "./answer-refiner";
-export { FeedbackGenerator } from "./feedback-generator";
