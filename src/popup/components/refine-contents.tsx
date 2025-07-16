@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { RefineAnswersMessage } from "@/types";
+import { RefineAnswersMessage } from "@/background/message-handler";
 
 interface RefineContentsProps {
   geminiApiKey: string;

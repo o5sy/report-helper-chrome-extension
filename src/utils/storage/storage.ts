@@ -1,4 +1,4 @@
-import { ExtensionSettings, UserPreferences } from "../types";
+import { ExtensionSettings, UserPreferences } from "./types";
 
 // Chrome API 타입 선언
 declare const chrome: {

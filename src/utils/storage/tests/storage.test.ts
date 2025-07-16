@@ -1,7 +1,7 @@
 import { ExtensionSettings, UserPreferences } from "../types";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { StorageManager } from "./storage";
+import { StorageManager } from "../storage";
 
 // Chrome API 모킹
 const mockChrome = {
