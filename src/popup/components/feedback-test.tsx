@@ -54,6 +54,7 @@ const FeedbackTest: React.FC<FeedbackTestProps> = ({
     loadSavedData();
   }, []);
 
+  // TODO storage에 직접 접근 못하도록 수정
   // Save data to chrome.storage whenever values change
   useEffect(() => {
     const saveData = async () => {
@@ -79,6 +80,7 @@ const FeedbackTest: React.FC<FeedbackTestProps> = ({
   }, [questionColumn, answerColumn, targetColumn, startRow, endRow]);
 
   const handleBatchFeedback = async () => {
+    // TODO 알림도 다른 ui(refinementResult)와 동일하게 처리
     if (!geminiApiKey) {
       alert("Gemini API Key가 필요합니다.");
       return;
