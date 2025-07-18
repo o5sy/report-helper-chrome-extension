@@ -172,8 +172,6 @@ const FeedbackTest: React.FC<FeedbackTestProps> = ({
 
   return (
     <>
-      <h2 className="mb-3 text-lg font-semibold">피드백 생성</h2>
-
       <div className="space-y-3">
         <div className="grid grid-cols-3 gap-2">
           <div>

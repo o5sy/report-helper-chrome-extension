@@ -119,9 +119,6 @@ function RefineContents({ geminiApiKey, spreadsheetId }: RefineContentsProps) {
 
   return (
     <>
-      {/* Answer Refinement Section */}
-      <h2 className="mb-3 text-lg font-semibold">답변 정제 자동화</h2>
-
       <div className="space-y-3">
         <div className="grid grid-cols-2 gap-2">
           <div>
