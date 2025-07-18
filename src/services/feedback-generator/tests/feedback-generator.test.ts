@@ -53,7 +53,7 @@ describe("FeedbackGenerator", () => {
       // Mock the processText method of GeminiClient
       vi.spyOn(
         feedbackGenerator["geminiClient"],
-        "processText"
+        "processText",
       ).mockResolvedValue(mockResponse);
 
       const result = await feedbackGenerator.generateBasicFeedback({
@@ -77,7 +77,7 @@ describe("FeedbackGenerator", () => {
 
       vi.spyOn(
         feedbackGenerator["geminiClient"],
-        "processText"
+        "processText",
       ).mockResolvedValue(mockResponse);
 
       const result = await feedbackGenerator.generateBasicFeedback({
@@ -110,7 +110,7 @@ describe("FeedbackGenerator", () => {
 
       vi.spyOn(
         feedbackGenerator["geminiClient"],
-        "processText"
+        "processText",
       ).mockResolvedValue(mockResponse);
 
       const result = await feedbackGenerator.generateBasicFeedback({

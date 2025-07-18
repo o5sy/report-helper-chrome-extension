@@ -28,7 +28,7 @@ export class GeminiClient {
   }
 
   async processText(
-    request: TextProcessingRequest
+    request: TextProcessingRequest,
   ): Promise<TextProcessingResponse> {
     const startTime = Date.now();
 

@@ -29,9 +29,8 @@ function TestContents({ geminiApiKey }: TestContentsProps) {
 
       // 3. 테스트용 스프레드시트 메타데이터 조회
       const testSpreadsheetId = "1-VI7YF8-gZ44ASrcFknIt_lBLBOwgASGAq9rMAYFcPw"; // 테스트용 스프레드시트 ID
-      const result = await sheetsService.getSpreadsheetMetadata(
-        testSpreadsheetId
-      );
+      const result =
+        await sheetsService.getSpreadsheetMetadata(testSpreadsheetId);
 
       if (result.success) {
         setApiTestResult(JSON.stringify(result.data, null, 2));
@@ -40,7 +39,7 @@ function TestContents({ geminiApiKey }: TestContentsProps) {
       }
     } catch (error) {
       setApiTestResult(
-        `예외 발생: ${error instanceof Error ? error.message : String(error)}`
+        `예외 발생: ${error instanceof Error ? error.message : String(error)}`,
       );
     }
   };
@@ -82,12 +81,12 @@ function TestContents({ geminiApiKey }: TestContentsProps) {
         setGeminiTestResult(
           `Gemini API 오류: 처리 실패 - ${
             result.processedText || "알 수 없는 오류"
-          }`
+          }`,
         );
       }
     } catch (error) {
       setGeminiTestResult(
-        `예외 발생: ${error instanceof Error ? error.message : String(error)}`
+        `예외 발생: ${error instanceof Error ? error.message : String(error)}`,
       );
     }
   };

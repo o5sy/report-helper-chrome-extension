@@ -15,7 +15,7 @@ export class ApiOrchestrator {
   private feedbackGenerator?: FeedbackGenerator;
 
   async refineAnswers(
-    options: BatchRefinementOptions
+    options: BatchRefinementOptions,
   ): Promise<BatchRefinementResult> {
     try {
       if (!this.answerRefiner) {
@@ -50,7 +50,7 @@ export class ApiOrchestrator {
   }
 
   async generateFeedback(
-    options: BatchFeedbackOptions
+    options: BatchFeedbackOptions,
   ): Promise<BatchFeedbackResult> {
     try {
       if (!this.feedbackGenerator) {

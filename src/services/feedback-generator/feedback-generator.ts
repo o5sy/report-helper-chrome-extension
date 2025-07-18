@@ -22,7 +22,7 @@ export class FeedbackGenerator {
   }
 
   async generateBasicFeedback(
-    request: BasicFeedbackRequest
+    request: BasicFeedbackRequest,
   ): Promise<FeedbackResult> {
     const startTime = Date.now();
 
@@ -73,18 +73,18 @@ export class FeedbackGenerator {
   }
 
   async generateBatchFeedback(
-    options: BatchFeedbackOptions
+    options: BatchFeedbackOptions,
   ): Promise<BatchFeedbackResult> {
     try {
       // Read existing data
       const readQuestionResult = await this.sheetsService.readRange(
         options.spreadsheetId,
-        options.sourceRange.questionRange
+        options.sourceRange.questionRange,
       );
 
       const readAnswerResult = await this.sheetsService.readRange(
         options.spreadsheetId,
-        options.sourceRange.answerRange
+        options.sourceRange.answerRange,
       );
 
       if (!readQuestionResult.success || !readAnswerResult.success) {
@@ -168,7 +168,7 @@ export class FeedbackGenerator {
         const writeResult = await this.sheetsService.updateRange(
           options.spreadsheetId,
           options.targetRange,
-          feedbackValues
+          feedbackValues,
         );
 
         if (!writeResult.success) {

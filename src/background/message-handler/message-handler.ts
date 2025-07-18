@@ -33,7 +33,7 @@ export class MessageHandler {
   }
 
   private async handleRefineAnswers(
-    message: ExtensionMessage & { type: "REFINE_ANSWERS" }
+    message: ExtensionMessage & { type: "REFINE_ANSWERS" },
   ): Promise<MessageResponse> {
     try {
       const result = await this.apiOrchestrator.refineAnswers({
@@ -59,7 +59,7 @@ export class MessageHandler {
   }
 
   private async handleGenerateFeedback(
-    message: ExtensionMessage & { type: "GENERATE_FEEDBACK" }
+    message: ExtensionMessage & { type: "GENERATE_FEEDBACK" },
   ): Promise<MessageResponse> {
     try {
       const result = await this.apiOrchestrator.generateFeedback({

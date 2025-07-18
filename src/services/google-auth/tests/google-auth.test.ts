@@ -40,7 +40,7 @@ describe("GoogleAuthService", () => {
 
     it("should return error when authentication fails", async () => {
       mockChrome.identity.getAuthToken.mockRejectedValue(
-        new Error("Auth failed")
+        new Error("Auth failed"),
       );
 
       const result = await authService.getAccessToken();
@@ -76,7 +76,7 @@ describe("GoogleAuthService", () => {
     it("should handle revocation error", async () => {
       const mockToken = "mock-token";
       mockChrome.identity.removeCachedAuthToken.mockRejectedValue(
-        new Error("Revoke failed")
+        new Error("Revoke failed"),
       );
 
       const result = await authService.revokeToken(mockToken);
@@ -109,7 +109,7 @@ describe("GoogleAuthService", () => {
 
     it("should return false when authentication check fails", async () => {
       mockChrome.identity.getAuthToken.mockRejectedValue(
-        new Error("Check failed")
+        new Error("Check failed"),
       );
 
       const result = await authService.isAuthenticated();
