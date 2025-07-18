@@ -18,7 +18,7 @@ export function Popup() {
 
   return (
     <div className="max-h-[600px] w-[500px] overflow-y-auto bg-background p-4 text-foreground">
-      <h1 className="mb-4 text-xl font-bold">Report Generator</h1>
+      <h1 className="mb-4 text-xl font-bold">Report Helper Tools 🛠️</h1>
 
       {/* gemini api key input */}
       <GeminiApiKeyInput apiKey={geminiApiKey} onChange={updateGeminiApiKey} />
