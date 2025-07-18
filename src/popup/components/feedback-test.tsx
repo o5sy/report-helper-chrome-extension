@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 
-import type { BatchFeedbackResult } from "@/services/feedback-generator";
+import type { BatchFeedbackResult } from '@/services/feedback-generator';
+import Button from './ui/button';
 
 interface FeedbackTestProps {
   geminiApiKey: string;
@@ -11,17 +12,17 @@ const FeedbackTest: React.FC<FeedbackTestProps> = ({
   geminiApiKey,
   spreadsheetId,
 }) => {
-  const [questionColumn, setQuestionColumn] = useState<string>("");
-  const [answerColumn, setAnswerColumn] = useState<string>("");
-  const [targetColumn, setTargetColumn] = useState<string>("");
+  const [questionColumn, setQuestionColumn] = useState<string>('');
+  const [answerColumn, setAnswerColumn] = useState<string>('');
+  const [targetColumn, setTargetColumn] = useState<string>('');
   const [startRow, setStartRow] = useState<number>(2);
   const [endRow, setEndRow] = useState<number>(10);
   const [batchResult, setBatchResult] = useState<BatchFeedbackResult | null>(
-    null,
+    null
   );
   const [isBatchLoading, setIsBatchLoading] = useState<boolean>(false);
   const [batchProcessingTime, setBatchProcessingTime] = useState<number | null>(
-    null,
+    null
   );
   const [batchProgress, setBatchProgress] = useState<{
     current: number;
@@ -35,19 +36,19 @@ const FeedbackTest: React.FC<FeedbackTestProps> = ({
       try {
         if (window.chrome?.storage?.local) {
           const result = await window.chrome.storage.local.get([
-            "feedbackTestData",
+            'feedbackTestData',
           ]);
           if (result.feedbackTestData) {
             const data = result.feedbackTestData;
-            setQuestionColumn(data.questionColumn || "");
-            setAnswerColumn(data.answerColumn || "");
-            setTargetColumn(data.targetColumn || "");
+            setQuestionColumn(data.questionColumn || '');
+            setAnswerColumn(data.answerColumn || '');
+            setTargetColumn(data.targetColumn || '');
             setStartRow(data.startRow || 2);
             setEndRow(data.endRow || 10);
           }
         }
       } catch (error) {
-        console.error("Failed to load saved data:", error);
+        console.error('Failed to load saved data:', error);
       }
     };
 
@@ -72,7 +73,7 @@ const FeedbackTest: React.FC<FeedbackTestProps> = ({
           });
         }
       } catch (error) {
-        console.error("Failed to save feedback test data:", error);
+        console.error('Failed to save feedback test data:', error);
       }
     };
 
@@ -82,7 +83,7 @@ const FeedbackTest: React.FC<FeedbackTestProps> = ({
   const handleBatchFeedback = async () => {
     // TODO 알림도 다른 ui(refinementResult)와 동일하게 처리
     if (!geminiApiKey) {
-      alert("Gemini API Key가 필요합니다.");
+      alert('Gemini API Key가 필요합니다.');
       return;
     }
 
@@ -93,13 +94,13 @@ const FeedbackTest: React.FC<FeedbackTestProps> = ({
       !targetColumn.trim()
     ) {
       alert(
-        "스프레드시트 ID, 질문 열, 답변 열, 피드백 열을 모두 입력해주세요.",
+        '스프레드시트 ID, 질문 열, 답변 열, 피드백 열을 모두 입력해주세요.'
       );
       return;
     }
 
     if (startRow < 1 || endRow < startRow) {
-      alert("올바른 행 범위를 입력해주세요.");
+      alert('올바른 행 범위를 입력해주세요.');
       return;
     }
 
@@ -119,7 +120,7 @@ const FeedbackTest: React.FC<FeedbackTestProps> = ({
       const targetRange = `${targetColumn}${startRow}:${targetColumn}${endRow}`;
 
       const response = await globalThis.chrome?.runtime?.sendMessage({
-        type: "GENERATE_FEEDBACK",
+        type: 'GENERATE_FEEDBACK',
         payload: {
           spreadsheetId: spreadsheetId.trim(),
           sourceRange: {
@@ -136,7 +137,7 @@ const FeedbackTest: React.FC<FeedbackTestProps> = ({
       if (response.success) {
         setBatchResult(response.data);
         alert(
-          "배치 피드백 생성이 완료되었습니다. 팝업을 닫아도 처리가 계속됩니다.",
+          '배치 피드백 생성이 완료되었습니다. 팝업을 닫아도 처리가 계속됩니다.'
         );
       } else {
         setBatchResult({
@@ -145,7 +146,7 @@ const FeedbackTest: React.FC<FeedbackTestProps> = ({
           successCount: 0,
           errorCount: 1,
           errors: [
-            response.error || "배치 피드백 생성 중 오류가 발생했습니다.",
+            response.error || '배치 피드백 생성 중 오류가 발생했습니다.',
           ],
         });
       }
@@ -171,37 +172,37 @@ const FeedbackTest: React.FC<FeedbackTestProps> = ({
 
   return (
     <>
-      <h2 className="text-lg font-semibold mb-3">피드백 생성</h2>
+      <h2 className="mb-3 text-lg font-semibold">피드백 생성</h2>
 
       <div className="space-y-3">
         <div className="grid grid-cols-3 gap-2">
           <div>
-            <label className="block text-sm font-medium mb-1">질문 열</label>
+            <label className="mb-1 block text-sm font-medium">질문 열</label>
             <input
               type="text"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
               placeholder="E"
               value={questionColumn}
               onChange={(e) => setQuestionColumn(e.target.value)}
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">답변 열</label>
+            <label className="mb-1 block text-sm font-medium">답변 열</label>
             <input
               type="text"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
               placeholder="F"
               value={answerColumn}
               onChange={(e) => setAnswerColumn(e.target.value)}
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">
+            <label className="mb-1 block text-sm font-medium">
               피드백 출력 열
             </label>
             <input
               type="text"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
               placeholder="I"
               value={targetColumn}
               onChange={(e) => setTargetColumn(e.target.value)}
@@ -211,43 +212,43 @@ const FeedbackTest: React.FC<FeedbackTestProps> = ({
 
         <div className="grid grid-cols-2 gap-2">
           <div>
-            <label className="block text-sm font-medium mb-1">시작 행</label>
+            <label className="mb-1 block text-sm font-medium">시작 행</label>
             <input
               type="number"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
               value={startRow}
               onChange={(e) => setStartRow(parseInt(e.target.value))}
-              onBlur={(e) => e.target.value === "" && setStartRow(0)}
+              onBlur={(e) => e.target.value === '' && setStartRow(0)}
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">종료 행</label>
+            <label className="mb-1 block text-sm font-medium">종료 행</label>
             <input
               type="number"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
               value={endRow}
               onChange={(e) => setEndRow(parseInt(e.target.value))}
-              onBlur={(e) => e.target.value === "" && setEndRow(0)}
+              onBlur={(e) => e.target.value === '' && setEndRow(0)}
             />
           </div>
         </div>
 
-        <button
+        <Button
+          className="w-full"
           onClick={handleBatchFeedback}
           disabled={isBatchLoading || !geminiApiKey}
-          className="w-full px-4 py-2 bg-green-500 text-white rounded text-sm hover:bg-green-600 disabled:bg-gray-400"
         >
-          {isBatchLoading ? "배치 피드백 생성 중..." : "배치 피드백 생성"}
-        </button>
+          {isBatchLoading ? '피드백 생성 중...' : '피드백 생성 실행'}
+        </Button>
 
         {/* Progress Display */}
         {batchProgress && (
-          <div className="mt-4 p-3 border rounded bg-blue-50">
-            <h4 className="font-medium mb-2">진행 상태:</h4>
+          <div className="mt-4 rounded border bg-blue-50 p-3">
+            <h4 className="mb-2 font-medium">진행 상태:</h4>
             <div className="space-y-2">
-              <div className="w-full bg-gray-200 rounded-full h-2">
+              <div className="h-2 w-full rounded-full bg-gray-200">
                 <div
-                  className="bg-blue-500 h-2 rounded-full transition-all duration-300"
+                  className="h-2 rounded-full bg-blue-500 transition-all duration-300"
                   style={{
                     width: `${
                       (batchProgress.current / batchProgress.total) * 100
@@ -259,7 +260,7 @@ const FeedbackTest: React.FC<FeedbackTestProps> = ({
                 <p>
                   진행률: {batchProgress.current}/{batchProgress.total} (
                   {Math.round(
-                    (batchProgress.current / batchProgress.total) * 100,
+                    (batchProgress.current / batchProgress.total) * 100
                   )}
                   %)
                 </p>
@@ -271,8 +272,8 @@ const FeedbackTest: React.FC<FeedbackTestProps> = ({
 
         {/* Batch Result Display */}
         {batchResult && (
-          <div className="mt-4 p-3 border rounded">
-            <h4 className="font-medium mb-2">배치 처리 결과:</h4>
+          <div className="mt-4 rounded border p-3">
+            <h4 className="mb-2 font-medium">배치 처리 결과:</h4>
             {batchProcessingTime && (
               <div className="mb-2 text-xs text-gray-600">
                 소요시간: {(batchProcessingTime / 1000).toFixed(2)}초
@@ -280,8 +281,8 @@ const FeedbackTest: React.FC<FeedbackTestProps> = ({
             )}
             {batchResult.success ? (
               <div className="space-y-2">
-                <div className="p-3 bg-green-50 border border-green-200 rounded">
-                  <h5 className="font-medium text-green-800 mb-1">
+                <div className="rounded border border-green-200 bg-green-50 p-3">
+                  <h5 className="mb-1 font-medium text-green-800">
                     처리 완료:
                   </h5>
                   <div className="text-sm text-green-700">
@@ -291,11 +292,11 @@ const FeedbackTest: React.FC<FeedbackTestProps> = ({
                   </div>
                 </div>
                 {batchResult.errors && batchResult.errors.length > 0 && (
-                  <div className="p-3 bg-yellow-50 border border-yellow-200 rounded">
-                    <h5 className="font-medium text-yellow-800 mb-1">
+                  <div className="rounded border border-yellow-200 bg-yellow-50 p-3">
+                    <h5 className="mb-1 font-medium text-yellow-800">
                       오류 목록:
                     </h5>
-                    <ul className="text-sm text-yellow-700 list-disc list-inside">
+                    <ul className="list-inside list-disc text-sm text-yellow-700">
                       {batchResult.errors.map((error, index) => (
                         <li key={index}>{error}</li>
                       ))}
@@ -304,11 +305,11 @@ const FeedbackTest: React.FC<FeedbackTestProps> = ({
                 )}
               </div>
             ) : (
-              <div className="p-3 bg-red-50 border border-red-200 rounded">
-                <h5 className="font-medium text-red-800 mb-1">오류:</h5>
+              <div className="rounded border border-red-200 bg-red-50 p-3">
+                <h5 className="mb-1 font-medium text-red-800">오류:</h5>
                 <div className="text-sm text-red-700">
                   {batchResult.errors && batchResult.errors.length > 0 ? (
-                    <ul className="list-disc list-inside">
+                    <ul className="list-inside list-disc">
                       {batchResult.errors.map((error, index) => (
                         <li key={index}>{error}</li>
                       ))}

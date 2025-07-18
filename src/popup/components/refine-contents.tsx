@@ -136,7 +136,7 @@ function RefineContents({ geminiApiKey, spreadsheetId }: RefineContentsProps) {
           </div>
           <div>
             <label className="mb-1 block text-sm font-medium">
-              정제된 답변 열
+              정제된 답변 출력 범위
             </label>
             <input
               type="text"
@@ -149,17 +149,19 @@ function RefineContents({ geminiApiKey, spreadsheetId }: RefineContentsProps) {
         </div>
       </div>
 
-      <div className="mt-4">
-        <p className="mb-2 text-sm font-medium">정제 결과:</p>
-        <pre className="min-h-[50px] overflow-auto whitespace-pre-wrap rounded bg-gray-100 p-2 text-xs">
-          {refinementResult || '아직 실행하지 않음'}
-        </pre>
-        {processingTime && (
-          <div className="mt-2 text-xs text-gray-600">
-            소요시간: {(processingTime / 1000).toFixed(2)}초
-          </div>
-        )}
-      </div>
+      {refinementResult && (
+        <div className="mt-4">
+          <p className="mb-2 text-sm font-medium">정제 결과:</p>
+          <pre className="min-h-[50px] overflow-auto whitespace-pre-wrap rounded bg-gray-100 p-2 text-xs">
+            {refinementResult || '아직 실행하지 않음'}
+          </pre>
+          {processingTime && (
+            <div className="mt-2 text-xs text-gray-600">
+              소요시간: {(processingTime / 1000).toFixed(2)}초
+            </div>
+          )}
+        </div>
+      )}
 
       <Button
         className="mt-3 w-full"
