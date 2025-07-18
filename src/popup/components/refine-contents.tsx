@@ -132,9 +132,7 @@ function RefineContents({ geminiApiKey, spreadsheetId }: RefineContentsProps) {
             />
           </div>
           <div>
-            <label className="mb-1 block text-sm font-medium">
-              정제된 답변 출력 범위
-            </label>
+            <label className="mb-1 block text-sm font-medium">출력 범위</label>
             <input
               type="text"
               className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"

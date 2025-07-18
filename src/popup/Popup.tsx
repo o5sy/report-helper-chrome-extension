@@ -33,7 +33,7 @@ export function Popup() {
           {TAB_ITEMS.map((tab) => (
             <button
               key={tab.value}
-              className={`flex-1 px-4 py-3 text-sm font-medium transition-all duration-200 ${
+              className={`flex-1 px-3 py-2 text-sm font-medium transition-all duration-200 ${
                 selectedTab === tab.value
                   ? 'border-b border-primary bg-[#46aa32]/10 text-primary'
                   : 'text-gray-600 hover:bg-gray-50'
