@@ -15,6 +15,8 @@ function RefineContents({ geminiApiKey, spreadsheetId }: RefineContentsProps) {
   const [refinementResult, setRefinementResult] = useState<string>('');
   const [processingTime, setProcessingTime] = useState<number | null>(null);
 
+  const [isRefineLoading, setIsRefineLoading] = useState<boolean>(false);
+
   // Load saved data from chrome.storage
   useEffect(() => {
     const loadSavedData = async () => {
@@ -71,6 +73,7 @@ function RefineContents({ geminiApiKey, spreadsheetId }: RefineContentsProps) {
       return;
     }
 
+    setIsRefineLoading(true);
     const startTime = Date.now();
 
     try {
@@ -114,6 +117,8 @@ function RefineContents({ geminiApiKey, spreadsheetId }: RefineContentsProps) {
           error instanceof Error ? error.message : String(error)
         }`
       );
+    } finally {
+      setIsRefineLoading(false);
     }
   };
 
@@ -161,7 +166,9 @@ function RefineContents({ geminiApiKey, spreadsheetId }: RefineContentsProps) {
       <Button
         className="mt-3 w-full"
         onClick={handleRefineAnswers}
-        disabled={!geminiApiKey.trim() || !spreadsheetId.trim()}
+        disabled={
+          !geminiApiKey.trim() || !spreadsheetId.trim() || isRefineLoading
+        }
       >
         답변 정제 실행
       </Button>

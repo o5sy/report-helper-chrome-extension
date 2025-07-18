@@ -136,18 +136,14 @@ const FeedbackTest: React.FC<FeedbackTestProps> = ({
 
       if (response.success) {
         setBatchResult(response.data);
-        alert(
-          '배치 피드백 생성이 완료되었습니다. 팝업을 닫아도 처리가 계속됩니다.'
-        );
+        alert('피드백 생성이 완료되었습니다. 팝업을 닫아도 처리가 계속됩니다.');
       } else {
         setBatchResult({
           success: false,
           processedCount: 0,
           successCount: 0,
           errorCount: 1,
-          errors: [
-            response.error || '배치 피드백 생성 중 오류가 발생했습니다.',
-          ],
+          errors: [response.error || '피드백 생성 중 오류가 발생했습니다.'],
         });
       }
     } catch (error) {
@@ -159,7 +155,7 @@ const FeedbackTest: React.FC<FeedbackTestProps> = ({
         successCount: 0,
         errorCount: 1,
         errors: [
-          `배치 피드백 생성 중 오류가 발생했습니다: ${
+          `피드백 생성 중 오류가 발생했습니다: ${
             error instanceof Error ? error.message : String(error)
           }`,
         ],
