@@ -17,11 +17,11 @@ const FeedbackTest: React.FC<FeedbackTestProps> = ({
   const [startRow, setStartRow] = useState<number>(2);
   const [endRow, setEndRow] = useState<number>(10);
   const [batchResult, setBatchResult] = useState<BatchFeedbackResult | null>(
-    null
+    null,
   );
   const [isBatchLoading, setIsBatchLoading] = useState<boolean>(false);
   const [batchProcessingTime, setBatchProcessingTime] = useState<number | null>(
-    null
+    null,
   );
   const [batchProgress, setBatchProgress] = useState<{
     current: number;
@@ -93,7 +93,7 @@ const FeedbackTest: React.FC<FeedbackTestProps> = ({
       !targetColumn.trim()
     ) {
       alert(
-        "스프레드시트 ID, 질문 열, 답변 열, 피드백 열을 모두 입력해주세요."
+        "스프레드시트 ID, 질문 열, 답변 열, 피드백 열을 모두 입력해주세요.",
       );
       return;
     }
@@ -136,7 +136,7 @@ const FeedbackTest: React.FC<FeedbackTestProps> = ({
       if (response.success) {
         setBatchResult(response.data);
         alert(
-          "배치 피드백 생성이 완료되었습니다. 팝업을 닫아도 처리가 계속됩니다."
+          "배치 피드백 생성이 완료되었습니다. 팝업을 닫아도 처리가 계속됩니다.",
         );
       } else {
         setBatchResult({
@@ -259,7 +259,7 @@ const FeedbackTest: React.FC<FeedbackTestProps> = ({
                 <p>
                   진행률: {batchProgress.current}/{batchProgress.total} (
                   {Math.round(
-                    (batchProgress.current / batchProgress.total) * 100
+                    (batchProgress.current / batchProgress.total) * 100,
                   )}
                   %)
                 </p>

@@ -1,8 +1,17 @@
 /* Content Script specific styles */
 .report-generator-widget {
   @apply fixed top-4 right-4 z-50 bg-white shadow-lg rounded-lg p-4 border;
-  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-    "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  font-family:
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    "Helvetica Neue",
+    Arial,
+    "Noto Sans",
+    sans-serif;
 }
 
 .report-generator-widget.dark {

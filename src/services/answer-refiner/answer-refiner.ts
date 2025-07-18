@@ -24,7 +24,7 @@ export class AnswerRefiner {
 
   async extractAnswerData(
     spreadsheetId: string,
-    range: string
+    range: string,
   ): Promise<{ success: boolean; data?: AnswerData[]; error?: string }> {
     try {
       const result = await this.sheetsService.readRange(spreadsheetId, range);
@@ -71,7 +71,7 @@ export class AnswerRefiner {
 
   async refineAnswerText(
     text: string,
-    customPrompt?: string
+    customPrompt?: string,
   ): Promise<RefinementResult> {
     try {
       const prompt = this.buildRefinePrompt(text, customPrompt);
@@ -105,7 +105,7 @@ export class AnswerRefiner {
   async writeRefinedAnswers(
     spreadsheetId: string,
     range: string,
-    answers: Array<{ rowIndex: number; refinedAnswer: string }>
+    answers: Array<{ rowIndex: number; refinedAnswer: string }>,
   ): Promise<WriteResult> {
     try {
       if (answers.length === 0) {
@@ -128,7 +128,7 @@ export class AnswerRefiner {
       const result = await this.sheetsService.updateRange(
         spreadsheetId,
         range,
-        values
+        values,
       );
 
       if (!result.success) {
@@ -153,13 +153,13 @@ export class AnswerRefiner {
   }
 
   async processBatchRefinement(
-    options: BatchRefinementOptions
+    options: BatchRefinementOptions,
   ): Promise<BatchRefinementResult> {
     try {
       // Extract data from spreadsheet
       const extractResult = await this.extractAnswerData(
         options.spreadsheetId,
-        options.sourceRange
+        options.sourceRange,
       );
 
       if (!extractResult.success) {
@@ -183,7 +183,7 @@ export class AnswerRefiner {
 
       // Filter items that need refinement
       const itemsToRefine = extractResult.data.filter(
-        (item) => item.needsRefinement
+        (item) => item.needsRefinement,
       );
 
       if (itemsToRefine.length === 0) {
@@ -203,7 +203,7 @@ export class AnswerRefiner {
       for (const item of itemsToRefine) {
         const refineResult = await this.refineAnswerText(
           item.originalAnswer,
-          options.customPrompt
+          options.customPrompt,
         );
 
         if (refineResult.success && refineResult.refinedText) {
@@ -213,7 +213,7 @@ export class AnswerRefiner {
           });
         } else {
           errors.push(
-            `Row ${item.rowIndex}: ${refineResult.error || "Unknown error"}`
+            `Row ${item.rowIndex}: ${refineResult.error || "Unknown error"}`,
           );
         }
       }
@@ -223,7 +223,7 @@ export class AnswerRefiner {
         const writeResult = await this.writeRefinedAnswers(
           options.spreadsheetId,
           options.targetRange,
-          refinedAnswers
+          refinedAnswers,
         );
 
         if (!writeResult.success) {

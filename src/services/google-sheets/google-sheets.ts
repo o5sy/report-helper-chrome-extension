@@ -14,7 +14,7 @@ export class GoogleSheetsService {
 
   // TODO 시트에 접근 가능한지 체크하는 용도로 사용하지 않는다면 삭제
   async getSpreadsheetMetadata(
-    spreadsheetId: string
+    spreadsheetId: string,
   ): Promise<ApiResult<SpreadsheetMetadata>> {
     const authResult = await this.authService.getAccessToken();
     if (!authResult.success) {
@@ -55,7 +55,7 @@ export class GoogleSheetsService {
 
   async readRange(
     spreadsheetId: string,
-    range: string
+    range: string,
   ): Promise<ApiResult<RangeData>> {
     const authResult = await this.authService.getAccessToken();
     if (!authResult.success) {
@@ -73,7 +73,7 @@ export class GoogleSheetsService {
           headers: {
             Authorization: `Bearer ${authResult.token}`,
           },
-        }
+        },
       );
 
       if (!response.ok) {
@@ -101,7 +101,7 @@ export class GoogleSheetsService {
   async updateRange(
     spreadsheetId: string,
     range: string,
-    values: string[][]
+    values: string[][],
   ): Promise<ApiResult<AppendResult>> {
     const authResult = await this.authService.getAccessToken();
     if (!authResult.success) {
@@ -122,7 +122,7 @@ export class GoogleSheetsService {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({ values }),
-        }
+        },
       );
 
       if (!response.ok) {

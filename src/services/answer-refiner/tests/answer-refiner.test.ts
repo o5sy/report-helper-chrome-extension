@@ -45,7 +45,7 @@ describe("AnswerRefiner", () => {
 
       const result = await answerRefiner.extractAnswerData(
         "test-spreadsheet-id",
-        "Sheet1!A:B"
+        "Sheet1!A:B",
       );
 
       expect(result.success).toBe(true);
@@ -67,7 +67,7 @@ describe("AnswerRefiner", () => {
 
       const result = await answerRefiner.extractAnswerData(
         "test-spreadsheet-id",
-        "Sheet1!A:B"
+        "Sheet1!A:B",
       );
 
       expect(result.success).toBe(false);
@@ -90,7 +90,7 @@ describe("AnswerRefiner", () => {
 
       const result = await answerRefiner.refineAnswerText(
         originalAnswer,
-        customPrompt
+        customPrompt,
       );
 
       expect(result.success).toBe(true);
@@ -137,7 +137,7 @@ describe("AnswerRefiner", () => {
       const result = await answerRefiner.writeRefinedAnswers(
         "test-spreadsheet-id",
         "Sheet1!C:C",
-        refinedAnswers
+        refinedAnswers,
       );
 
       expect(result.success).toBe(true);
@@ -153,7 +153,7 @@ describe("AnswerRefiner", () => {
       const result = await answerRefiner.writeRefinedAnswers(
         "test-spreadsheet-id",
         "Sheet1!C:C",
-        [{ rowIndex: 0, refinedAnswer: "test answer" }]
+        [{ rowIndex: 0, refinedAnswer: "test answer" }],
       );
 
       expect(result.success).toBe(false);

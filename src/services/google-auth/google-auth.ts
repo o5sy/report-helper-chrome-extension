@@ -21,7 +21,7 @@ export class GoogleAuthService {
             } else {
               reject(new Error("No token received"));
             }
-          }
+          },
         );
       });
 
@@ -71,7 +71,7 @@ export class GoogleAuthService {
           },
           (token) => {
             resolve(token);
-          }
+          },
         );
       });
       return !!token;
