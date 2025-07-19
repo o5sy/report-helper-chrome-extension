@@ -17,7 +17,7 @@ export function Popup() {
   const { spreadsheetId } = useUseSpreadSheetId();
 
   return (
-    <div className="min-h-[600px] min-w-[500px] overflow-y-auto bg-background p-4 text-foreground">
+    <div className="min-h-[600px] min-w-[350px] overflow-y-auto bg-background p-4 text-foreground">
       <h1 className="mb-4 text-xl font-bold">Report Helper Tools 🛠️</h1>
 
       {/* gemini api key input */}
