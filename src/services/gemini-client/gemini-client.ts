@@ -2,21 +2,21 @@ import {
   GeminiConfig,
   TextProcessingRequest,
   TextProcessingResponse,
-} from "./types";
+} from './types';
 
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenAI } from '@google/genai';
 
 export class GeminiClient {
   private ai: GoogleGenAI;
   private config: GeminiConfig;
 
   constructor(config: GeminiConfig) {
-    if (!config.apiKey || config.apiKey.trim() === "") {
-      throw new Error("API key is required");
+    if (!config.apiKey || config.apiKey.trim() === '') {
+      throw new Error('API key is required');
     }
 
     this.config = {
-      model: "gemini-1.5-flash",
+      model: 'gemini-2.0-flash-lite',
       maxOutputTokens: 1000,
       temperature: 0.7,
       ...config,
@@ -28,7 +28,7 @@ export class GeminiClient {
   }
 
   async processText(
-    request: TextProcessingRequest,
+    request: TextProcessingRequest
   ): Promise<TextProcessingResponse> {
     const startTime = Date.now();
 
@@ -42,7 +42,7 @@ export class GeminiClient {
         },
       });
 
-      const processedText = response.text?.trim() || "";
+      const processedText = response.text?.trim() || '';
       const tokensUsed = response.usageMetadata?.totalTokenCount || 0;
       const processingTime = Date.now() - startTime;
 
@@ -57,11 +57,11 @@ export class GeminiClient {
         },
       };
     } catch (error) {
-      console.error("Gemini API error:", error);
+      console.error('Gemini API error:', error);
 
       return {
         success: false,
-        processedText: "",
+        processedText: '',
         originalText: request.prompt,
         processingType: request.type,
         metadata: {
