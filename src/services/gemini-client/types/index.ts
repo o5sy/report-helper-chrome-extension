@@ -7,14 +7,14 @@ export interface GeminiConfig {
 
 export interface TextProcessingRequest {
   prompt: string;
-  type: "refine" | "feedback";
+  type: 'refine' | 'feedback';
 }
 
 export interface TextProcessingResponse {
   success: boolean;
   processedText: string;
   originalText: string;
-  processingType: "refine" | "feedback";
+  processingType: 'refine' | 'feedback';
   metadata?: {
     tokensUsed?: number;
     processingTime?: number;

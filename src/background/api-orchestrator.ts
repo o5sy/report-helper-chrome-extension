@@ -2,20 +2,20 @@ import {
   AnswerRefiner,
   BatchRefinementOptions,
   BatchRefinementResult,
-} from "@/services/answer-refiner";
+} from '@/services/answer-refiner';
 import type {
   BatchFeedbackOptions,
   BatchFeedbackResult,
-} from "@/services/feedback-generator";
+} from '@/services/feedback-generator';
 
-import { FeedbackGenerator } from "@/services/feedback-generator";
+import { FeedbackGenerator } from '@/services/feedback-generator';
 
 export class ApiOrchestrator {
   private answerRefiner?: AnswerRefiner;
   private feedbackGenerator?: FeedbackGenerator;
 
   async refineAnswers(
-    options: BatchRefinementOptions,
+    options: BatchRefinementOptions
   ): Promise<BatchRefinementResult> {
     try {
       if (!this.answerRefiner) {
@@ -26,7 +26,7 @@ export class ApiOrchestrator {
             processedCount: 0,
             successCount: 0,
             errorCount: 1,
-            errors: ["Gemini API key not configured"],
+            errors: ['Gemini API key not configured'],
           };
         }
 
@@ -43,14 +43,14 @@ export class ApiOrchestrator {
         successCount: 0,
         errorCount: 1,
         errors: [
-          error instanceof Error ? error.message : "Unknown error occurred",
+          error instanceof Error ? error.message : 'Unknown error occurred',
         ],
       };
     }
   }
 
   async generateFeedback(
-    options: BatchFeedbackOptions,
+    options: BatchFeedbackOptions
   ): Promise<BatchFeedbackResult> {
     try {
       if (!this.feedbackGenerator) {
@@ -61,7 +61,7 @@ export class ApiOrchestrator {
             processedCount: 0,
             successCount: 0,
             errorCount: 1,
-            errors: ["Gemini API key not configured"],
+            errors: ['Gemini API key not configured'],
           };
         }
 
@@ -84,7 +84,7 @@ export class ApiOrchestrator {
         successCount: 0,
         errorCount: 1,
         errors: [
-          error instanceof Error ? error.message : "Unknown error occurred",
+          error instanceof Error ? error.message : 'Unknown error occurred',
         ],
       };
     }
@@ -95,11 +95,11 @@ export class ApiOrchestrator {
     try {
       // Get API key from Chrome storage
       const result = await globalThis.chrome?.storage?.sync?.get([
-        "geminiApiKey",
+        'geminiApiKey',
       ]);
       return result?.geminiApiKey || null;
     } catch (error) {
-      console.error("Failed to get Gemini API key:", error);
+      console.error('Failed to get Gemini API key:', error);
       return null;
     }
   }
