@@ -1,3 +1,4 @@
+import ProcessResult, { ProcessResultProps } from './process-result';
 import React, { useEffect, useState } from 'react';
 
 import type { BatchFeedbackResult } from '@/services/feedback-generator';
@@ -24,11 +25,6 @@ const FeedbackTest: React.FC<FeedbackTestProps> = ({
   const [batchProcessingTime, setBatchProcessingTime] = useState<number | null>(
     null
   );
-  const [batchProgress, setBatchProgress] = useState<{
-    current: number;
-    total: number;
-    currentRow: number;
-  } | null>(null);
 
   // Load saved data from chrome.storage
   useEffect(() => {
@@ -108,11 +104,6 @@ const FeedbackTest: React.FC<FeedbackTestProps> = ({
     setBatchResult(null);
     setBatchProcessingTime(null);
     const startTime = Date.now();
-    setBatchProgress({
-      current: 0,
-      total: endRow - startRow + 1,
-      currentRow: startRow,
-    });
 
     try {
       const questionRange = `${questionColumn}${startRow}:${questionColumn}${endRow}`;
@@ -162,9 +153,22 @@ const FeedbackTest: React.FC<FeedbackTestProps> = ({
       });
     } finally {
       setIsBatchLoading(false);
-      setBatchProgress(null);
     }
   };
+
+  const processResultProps: ProcessResultProps = isBatchLoading
+    ? {
+        status: 'in-progress',
+        message: '피드백 생성 중...',
+      }
+    : {
+        status: 'completed',
+        processedCount: batchResult?.processedCount || 0,
+        successCount: batchResult?.successCount || 0,
+        errorCount: batchResult?.errorCount || 0,
+        errors: batchResult?.errors || [],
+        processingTime: batchProcessingTime || 0,
+      };
 
   return (
     <>
@@ -232,90 +236,11 @@ const FeedbackTest: React.FC<FeedbackTestProps> = ({
           onClick={handleBatchFeedback}
           disabled={isBatchLoading || !geminiApiKey}
         >
-          {isBatchLoading ? '피드백 생성 중...' : '피드백 생성 실행'}
+          피드백 생성 실행
         </Button>
 
-        {/* Progress Display */}
-        {batchProgress && (
-          <div className="mt-4 rounded border bg-blue-50 p-3">
-            <h4 className="mb-2 font-medium">진행 상태:</h4>
-            <div className="space-y-2">
-              <div className="h-2 w-full rounded-full bg-gray-200">
-                <div
-                  className="h-2 rounded-full bg-blue-500 transition-all duration-300"
-                  style={{
-                    width: `${
-                      (batchProgress.current / batchProgress.total) * 100
-                    }%`,
-                  }}
-                ></div>
-              </div>
-              <div className="text-sm text-blue-700">
-                <p>
-                  진행률: {batchProgress.current}/{batchProgress.total} (
-                  {Math.round(
-                    (batchProgress.current / batchProgress.total) * 100
-                  )}
-                  %)
-                </p>
-                <p>현재 처리 중인 행: {batchProgress.currentRow}</p>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Batch Result Display */}
-        {batchResult && (
-          <div className="mt-4 rounded border p-3">
-            <h4 className="mb-2 font-medium">배치 처리 결과:</h4>
-            {batchProcessingTime && (
-              <div className="mb-2 text-xs text-gray-600">
-                소요시간: {(batchProcessingTime / 1000).toFixed(2)}초
-              </div>
-            )}
-            {batchResult.success ? (
-              <div className="space-y-2">
-                <div className="rounded border border-green-200 bg-green-50 p-3">
-                  <h5 className="mb-1 font-medium text-green-800">
-                    처리 완료:
-                  </h5>
-                  <div className="text-sm text-green-700">
-                    <p>전체 처리: {batchResult.processedCount}개</p>
-                    <p>성공: {batchResult.successCount}개</p>
-                    <p>실패: {batchResult.errorCount}개</p>
-                  </div>
-                </div>
-                {batchResult.errors && batchResult.errors.length > 0 && (
-                  <div className="rounded border border-yellow-200 bg-yellow-50 p-3">
-                    <h5 className="mb-1 font-medium text-yellow-800">
-                      오류 목록:
-                    </h5>
-                    <ul className="list-inside list-disc text-sm text-yellow-700">
-                      {batchResult.errors.map((error, index) => (
-                        <li key={index}>{error}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </div>
-            ) : (
-              <div className="rounded border border-red-200 bg-red-50 p-3">
-                <h5 className="mb-1 font-medium text-red-800">오류:</h5>
-                <div className="text-sm text-red-700">
-                  {batchResult.errors && batchResult.errors.length > 0 ? (
-                    <ul className="list-inside list-disc">
-                      {batchResult.errors.map((error, index) => (
-                        <li key={index}>{error}</li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <p>알 수 없는 오류가 발생했습니다.</p>
-                  )}
-                </div>
-              </div>
-            )}
-          </div>
-        )}
+        {/* 처리 결과 */}
+        {batchResult && <ProcessResult {...processResultProps} />}
       </div>
     </>
   );

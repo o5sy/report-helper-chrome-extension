@@ -1,7 +1,16 @@
+import ProcessResult, { ProcessResultProps } from './process-result';
 import { useEffect, useState } from 'react';
 
 import Button from './ui/button';
 import { RefineAnswersMessage } from '@/background/message-handler';
+
+type RefineResult = {
+  success: boolean;
+  processedCount: number;
+  successCount: number;
+  errorCount: number;
+  errors: string[];
+};
 
 interface RefineContentsProps {
   geminiApiKey: string;
@@ -12,10 +21,87 @@ function RefineContents({ geminiApiKey, spreadsheetId }: RefineContentsProps) {
   const [sourceRange, setSourceRange] = useState<string>('D2:D3');
   const [targetRange, setTargetRange] = useState<string>('E2:E3');
 
-  const [refinementResult, setRefinementResult] = useState<string>('');
+  const [refinementResult, setRefinementResult] = useState<RefineResult>();
   const [processingTime, setProcessingTime] = useState<number | null>(null);
 
   const [isRefineLoading, setIsRefineLoading] = useState<boolean>(false);
+
+  const processResultProps: ProcessResultProps = isRefineLoading
+    ? {
+        status: 'in-progress',
+        message: '답변 정제 작업을 시작합니다...',
+      }
+    : {
+        status: 'completed',
+        processedCount: refinementResult?.processedCount || 0,
+        successCount: refinementResult?.successCount || 0,
+        errorCount: refinementResult?.errorCount || 0,
+        errors: refinementResult?.errors || [],
+        processingTime: processingTime || 0,
+      };
+
+  const handleRefineAnswers = async () => {
+    if (!spreadsheetId.trim() || !geminiApiKey.trim()) {
+      return;
+    }
+
+    setIsRefineLoading(true);
+    const startTime = Date.now();
+
+    try {
+      setProcessingTime(null);
+
+      const message: RefineAnswersMessage = {
+        type: 'REFINE_ANSWERS',
+        payload: {
+          spreadsheetId: spreadsheetId.trim(),
+          sourceRange: sourceRange.trim(),
+          targetRange: targetRange.trim(),
+          //   customPrompt: customPrompt.trim() || undefined,
+        },
+      };
+
+      const response = await window.chrome.runtime.sendMessage(message);
+      const endTime = Date.now();
+      const duration = endTime - startTime;
+      setProcessingTime(duration);
+
+      if (response.success) {
+        const result = response.data;
+        setRefinementResult({
+          success: true,
+          processedCount: result.processedCount,
+          successCount: result.successCount,
+          errorCount: result.errorCount,
+          errors: result.errors,
+        });
+      } else {
+        setRefinementResult({
+          success: false,
+          processedCount: 0,
+          successCount: 0,
+          errorCount: 1,
+          errors: [response.error || '답변 정제 중 오류가 발생했습니다.'],
+        });
+      }
+    } catch (error) {
+      const endTime = Date.now();
+      const duration = endTime - startTime;
+      setProcessingTime(duration);
+
+      setRefinementResult({
+        success: false,
+        processedCount: 0,
+        successCount: 0,
+        errorCount: 1,
+        errors: [
+          `예외 발생: ${error instanceof Error ? error.message : String(error)}`,
+        ],
+      });
+    } finally {
+      setIsRefineLoading(false);
+    }
+  };
 
   // Load saved data from chrome.storage
   useEffect(() => {
@@ -60,68 +146,6 @@ function RefineContents({ geminiApiKey, spreadsheetId }: RefineContentsProps) {
     saveData();
   }, [sourceRange, targetRange]);
 
-  const handleRefineAnswers = async () => {
-    if (!spreadsheetId.trim()) {
-      setRefinementResult('스프레드시트 ID를 입력해주세요.');
-      setProcessingTime(null);
-      return;
-    }
-
-    if (!geminiApiKey.trim()) {
-      setRefinementResult('Gemini API 키를 먼저 설정해주세요.');
-      setProcessingTime(null);
-      return;
-    }
-
-    setIsRefineLoading(true);
-    const startTime = Date.now();
-
-    try {
-      setRefinementResult('답변 정제 작업을 시작합니다...');
-      setProcessingTime(null);
-
-      const message: RefineAnswersMessage = {
-        type: 'REFINE_ANSWERS',
-        payload: {
-          spreadsheetId: spreadsheetId.trim(),
-          sourceRange: sourceRange.trim() || 'A:B',
-          targetRange: targetRange.trim() || 'C:C',
-          //   customPrompt: customPrompt.trim() || undefined,
-        },
-      };
-
-      const response = await window.chrome.runtime.sendMessage(message);
-      const endTime = Date.now();
-      const duration = endTime - startTime;
-      setProcessingTime(duration);
-
-      if (response.success) {
-        const result = response.data;
-        setRefinementResult(
-          `✅ 답변 정제 완료!\n` +
-            `처리된 항목: ${result.processedCount}개\n` +
-            `성공: ${result.successCount}개\n` +
-            `실패: ${result.errorCount}개\n` +
-            (result.errors ? `\n오류:\n${result.errors.join('\n')}` : '')
-        );
-      } else {
-        setRefinementResult(`❌ 답변 정제 실패: ${response.error}`);
-      }
-    } catch (error) {
-      const endTime = Date.now();
-      const duration = endTime - startTime;
-      setProcessingTime(duration);
-
-      setRefinementResult(
-        `❌ 예외 발생: ${
-          error instanceof Error ? error.message : String(error)
-        }`
-      );
-    } finally {
-      setIsRefineLoading(false);
-    }
-  };
-
   return (
     <>
       <div className="space-y-3">
@@ -131,7 +155,7 @@ function RefineContents({ geminiApiKey, spreadsheetId }: RefineContentsProps) {
             <input
               type="text"
               className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
-              placeholder="A:B"
+              placeholder="D2:D3"
               value={sourceRange}
               onChange={(e) => setSourceRange(e.target.value)}
             />
@@ -141,27 +165,13 @@ function RefineContents({ geminiApiKey, spreadsheetId }: RefineContentsProps) {
             <input
               type="text"
               className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
-              placeholder="C:C"
+              placeholder="E2:E3"
               value={targetRange}
               onChange={(e) => setTargetRange(e.target.value)}
             />
           </div>
         </div>
       </div>
-
-      {refinementResult && (
-        <div className="mt-4">
-          <p className="mb-2 text-sm font-medium">정제 결과:</p>
-          <pre className="min-h-[50px] overflow-auto whitespace-pre-wrap rounded bg-gray-100 p-2 text-xs">
-            {refinementResult || '아직 실행하지 않음'}
-          </pre>
-          {processingTime && (
-            <div className="mt-2 text-xs text-gray-600">
-              소요시간: {(processingTime / 1000).toFixed(2)}초
-            </div>
-          )}
-        </div>
-      )}
 
       <Button
         className="mt-3 w-full"
@@ -172,6 +182,9 @@ function RefineContents({ geminiApiKey, spreadsheetId }: RefineContentsProps) {
       >
         답변 정제 실행
       </Button>
+
+      {/* 처리 결과 */}
+      {refinementResult && <ProcessResult {...processResultProps} />}
     </>
   );
 }
