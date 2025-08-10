@@ -10,7 +10,8 @@
     "128": "icons/icon-128.png"
   },
   "background": {
-    "service_worker": "src/background/index.js"
+    "service_worker": "src/background/index.ts",
+    "type": "module"
   },
   "side_panel": {
     "default_path": "src/popup/index.html"
@@ -27,7 +28,7 @@
   "content_scripts": [
     {
       "matches": ["https://docs.google.com/spreadsheets/*"],
-      "js": ["src/content/index.js"]
+      "js": ["src/content/index.ts"]
     }
   ],
   "permissions": ["identity", "storage", "activeTab", "sidePanel"],

@@ -4,13 +4,14 @@
   "description": "Chrome Extension for generating reports from web content",
   "type": "module",
   "scripts": {
-    "dev": "vite dev",
-    "build": "tsc && vite build",
+    "dev": "npm run clean && vite dev",
+    "build": "npm run clean && npm run type-check && vite build",
     "test": "vitest",
     "test:ui": "vitest --ui",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "lint:fix": "eslint . --ext ts,tsx --fix",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "clean": "rm -rf dist"
   },
   "dependencies": {
     "@google/genai": "^1.7.0",
@@ -20,7 +21,7 @@
     "webextension-polyfill": "^0.12.0"
   },
   "devDependencies": {
-    "@crxjs/vite-plugin": "^2.0.2",
+    "@crxjs/vite-plugin": "^2.1.0",
     "@eslint/js": "^9.15.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.0.1",
