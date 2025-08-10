@@ -27,12 +27,11 @@
   "content_scripts": [
     {
       "matches": ["https://docs.google.com/spreadsheets/*"],
-      "js": ["src/content/index.js"],
-      "run_at": "document_idle"
+      "js": ["src/content/index.js"]
     }
   ],
   "permissions": ["identity", "storage", "activeTab", "sidePanel"],
-  "host_permissions": ["http://*/*", "https://*/*"],
+  "host_permissions": ["https://docs.google.com/spreadsheets/*"],
   "oauth2": {
     "client_id": "459670883381-hp10s58i52nhla3siuc5gsqkpat86rgb.apps.googleusercontent.com",
     "scopes": ["https://www.googleapis.com/auth/spreadsheets"]
