@@ -94,7 +94,7 @@ export class ApiOrchestrator {
   private async getGeminiApiKey(): Promise<string | null> {
     try {
       // Get API key from Chrome storage
-      const result = await globalThis.chrome?.storage?.sync?.get([
+      const result = await globalThis.chrome?.storage?.local?.get([
         'geminiApiKey',
       ]);
       return result?.geminiApiKey || null;

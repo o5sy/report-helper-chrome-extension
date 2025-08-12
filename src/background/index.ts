@@ -1,13 +1,13 @@
 /// <reference types="chrome"/>
-import { MessageHandler } from "@/background/message-handler";
+import { MessageHandler } from '@/background/message-handler';
 
-console.log("Report Generator background service worker loaded");
+console.log('Report Generator background service worker loaded');
 
 const messageHandler = new MessageHandler();
 
 // Extension installed event
 chrome.runtime.onInstalled.addListener(() => {
-  console.log("Report Generator extension installed successfully");
+  console.log('Report Generator extension installed successfully');
 });
 
 // Message listener for communication with content scripts and popup
@@ -20,11 +20,18 @@ chrome.runtime.onMessage.addListener((message, _, sendResponse) => {
     .catch((error) => {
       sendResponse({
         success: false,
-        type: "ERROR_RESPONSE",
-        error: error.message || "Unknown error",
+        type: 'ERROR_RESPONSE',
+        error: error.message || 'Unknown error',
       });
     });
 
   // Return true to indicate we will respond asynchronously
   return true;
 });
+window.onload = function () {
+  document.querySelector('button').addEventListener('click', function () {
+    chrome.identity.getAuthToken({ interactive: true }, function (token) {
+      console.log(token);
+    });
+  });
+};
