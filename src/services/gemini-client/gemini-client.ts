@@ -6,6 +6,8 @@ import {
 
 import { GoogleGenAI } from '@google/genai';
 
+const DEFAULT_MODEL = 'gemini-2.5-flash-lite';
+
 export class GeminiClient {
   private ai: GoogleGenAI;
   private config: GeminiConfig;
@@ -16,7 +18,7 @@ export class GeminiClient {
     }
 
     this.config = {
-      model: 'gemini-2.0-flash-lite',
+      model: DEFAULT_MODEL,
       maxOutputTokens: 1000,
       temperature: 0.7,
       ...config,
@@ -34,7 +36,7 @@ export class GeminiClient {
 
     try {
       const response = await this.ai.models.generateContent({
-        model: this.config.model!,
+        model: this.config.model || DEFAULT_MODEL,
         contents: request.prompt,
         config: {
           maxOutputTokens: this.config.maxOutputTokens,
