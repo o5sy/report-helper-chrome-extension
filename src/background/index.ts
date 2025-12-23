@@ -28,10 +28,3 @@ chrome.runtime.onMessage.addListener((message, _, sendResponse) => {
   // Return true to indicate we will respond asynchronously
   return true;
 });
-window.onload = function () {
-  document.querySelector('button').addEventListener('click', function () {
-    chrome.identity.getAuthToken({ interactive: true }, function (token) {
-      console.log(token);
-    });
-  });
-};

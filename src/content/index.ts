@@ -1,4 +1,4 @@
-import { SheetDetector } from "@/services/sheet-detector";
+import { SheetDetector } from '@/services/sheet-detector';
 
 /**
  * Content Script 메인 진입점
@@ -17,7 +17,7 @@ function initContentScript(): void {
     try {
       detector.sendSheetInfoToBackground();
     } catch (error) {
-      console.error("Error detecting sheet info:", error);
+      console.error('Error detecting sheet info:', error);
     }
   }
 
@@ -42,14 +42,20 @@ function initContentScript(): void {
   });
 
   // 페이지 언로드시 옵저버 정리
-  window.addEventListener("beforeunload", () => {
+  window.addEventListener('beforeunload', () => {
     urlObserver.disconnect();
   });
 }
 
 // Content Script 실행
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", initContentScript);
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initContentScript);
 } else {
   initContentScript();
 }
+
+window.onload = function () {
+  chrome.identity.getAuthToken({ interactive: true }, function (token) {
+    console.log(token);
+  });
+};
