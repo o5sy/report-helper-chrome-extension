@@ -34,6 +34,10 @@ export class GeminiClient {
   ): Promise<TextProcessingResponse> {
     const startTime = Date.now();
 
+    // 모델 리스트 가져오기 (디버깅용)
+    // const models = await this.ai.models.list();
+    // console.log('🚀 ~ GeminiClient ~ processText ~ models:', models);
+
     try {
       const response = await this.ai.models.generateContent({
         model: this.config.model || DEFAULT_MODEL,
