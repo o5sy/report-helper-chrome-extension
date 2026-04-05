@@ -4,7 +4,7 @@
   "description": "Chrome Extension for generating reports from web content",
   "type": "module",
   "scripts": {
-    "dev": "npm run clean && vite dev",
+    "dev": "npm run clean && vite dev --debug",
     "build": "npm run clean && npm run type-check && vite build",
     "test": "vitest",
     "test:ui": "vitest --ui",
