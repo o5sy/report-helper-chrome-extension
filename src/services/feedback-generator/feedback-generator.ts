@@ -8,10 +8,12 @@ import { GeminiClient, GeminiConfig } from "@/services/gemini-client";
 
 import { GoogleServiceFactory } from "@/services/google-service-factory";
 import { GoogleSheetsService } from "@/services/google-sheets";
+import { ReferenceStoreService } from "@/services/reference-store";
 
 export class FeedbackGenerator {
   private geminiClient: GeminiClient;
   private sheetsService: GoogleSheetsService;
+  private referenceStore: ReferenceStoreService;
 
   constructor(config: GeminiConfig) {
     if (!config.apiKey || config.apiKey.trim() === "") {
@@ -19,6 +21,7 @@ export class FeedbackGenerator {
     }
     this.geminiClient = new GeminiClient(config);
     this.sheetsService = GoogleServiceFactory.getSheetsService();
+    this.referenceStore = new ReferenceStoreService();
   }
 
   async generateBasicFeedback(
@@ -116,6 +119,9 @@ export class FeedbackGenerator {
         };
       }
 
+      // 배치 전체에 공통으로 사용할 tone 프롬프트 로드
+      const toneSystemPrompt = await this.referenceStore.getToneSystemPrompt();
+
       // Generate feedbacks for each row
       const feedbacks: string[] = [];
       const errors: string[] = [];
@@ -145,10 +151,16 @@ export class FeedbackGenerator {
           continue;
         }
 
+        // 질문별 few-shot 예시 조회
+        const fewShotExamples =
+          await this.referenceStore.getExamplesForQuestion(question);
+
+        const customPrompt = buildEnrichedPrompt({ toneSystemPrompt, fewShotExamples });
+
         const feedbackResult = await this.generateBasicFeedback({
           question,
           answer,
-          customPrompt: options.customPrompt,
+          customPrompt,
         });
 
         if (feedbackResult.success) {
@@ -241,4 +253,37 @@ export class FeedbackGenerator {
 
     return prompt;
   }
+}
+
+/**
+ * tone 가이드와 few-shot 예시를 조합해 customPrompt 문자열 생성
+ */
+// TODO 프롬프트 최적화 방법 고민 - 토큰 절약
+export function buildEnrichedPrompt({
+  toneSystemPrompt,
+  fewShotExamples,
+}: {
+  toneSystemPrompt?: string | null;
+  fewShotExamples?: string[] | null;
+}): string | undefined {
+  const parts: string[] = [];
+
+  if (toneSystemPrompt) {
+    parts.push(`[말투/톤 가이드]\n${toneSystemPrompt}`);
+  }
+
+  if (fewShotExamples && fewShotExamples.length > 0) {
+    const examplesText = fewShotExamples
+      .map((ex, i) => `예시 ${i + 1}:\n${ex}`)
+      .join("\n\n");
+    parts.push(`[동일 질문에 대한 참고 피드백 예시]\n${examplesText}`);
+  }
+
+  if (parts.length === 0) return undefined;
+
+  parts.push(
+    `[피드백 요구사항]\n1. 잘한 점과 아쉬운 점을 균형있게 포함\n2. 기술적 측면과 협업 측면에서의 세부 피드백\n3. 구체적이고 실행 가능한 개선 방안 제시\n4. 응답은 한글 기준 400자 내외로 작성\n5. 마크다운 형식을 사용하지 말고 일반 텍스트로만 작성\n\n[피드백 형식]\n잘한 점:\n- 기술적 측면\n- 협업 측면\n아쉬운 점:\n- 기술적 측면\n- 협업 측면\n개선 방안:\n- 구체적인 실행 방안`,
+  );
+
+  return parts.join("\n\n");
 }
