@@ -7,6 +7,7 @@ export interface GeminiConfig {
 
 export interface TextProcessingRequest {
   prompt: string;
+  // ? type이 왜있지?
   type: 'refine' | 'feedback';
 }
 
