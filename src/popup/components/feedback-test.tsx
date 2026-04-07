@@ -25,6 +25,7 @@ const FeedbackTest: React.FC<FeedbackTestProps> = ({
   const [batchProcessingTime, setBatchProcessingTime] = useState<number | null>(
     null
   );
+  const [validationError, setValidationError] = useState<string | null>(null);
 
   // Load saved data from chrome.storage
   useEffect(() => {
@@ -77,9 +78,10 @@ const FeedbackTest: React.FC<FeedbackTestProps> = ({
   }, [questionColumn, answerColumn, targetColumn, startRow, endRow]);
 
   const handleBatchFeedback = async () => {
-    // TODO 알림도 다른 ui(refinementResult)와 동일하게 처리
+    setValidationError(null);
+
     if (!geminiApiKey) {
-      alert('Gemini API Key가 필요합니다.');
+      setValidationError('Gemini API Key가 필요합니다.');
       return;
     }
 
@@ -89,14 +91,12 @@ const FeedbackTest: React.FC<FeedbackTestProps> = ({
       !answerColumn.trim() ||
       !targetColumn.trim()
     ) {
-      alert(
-        '스프레드시트 ID, 질문 열, 답변 열, 피드백 열을 모두 입력해주세요.'
-      );
+      setValidationError('스프레드시트 ID, 질문 열, 답변 열, 피드백 열을 모두 입력해주세요.');
       return;
     }
 
     if (startRow < 1 || endRow < startRow) {
-      alert('올바른 행 범위를 입력해주세요.');
+      setValidationError('올바른 행 범위를 입력해주세요.');
       return;
     }
 
@@ -127,7 +127,6 @@ const FeedbackTest: React.FC<FeedbackTestProps> = ({
 
       if (response.success) {
         setBatchResult(response.data);
-        alert('피드백 생성이 완료되었습니다. 팝업을 닫아도 처리가 계속됩니다.');
       } else {
         setBatchResult({
           success: false,
@@ -231,6 +230,9 @@ const FeedbackTest: React.FC<FeedbackTestProps> = ({
           </div>
         </div>
 
+        {validationError && (
+          <p className="text-xs text-red-600">{validationError}</p>
+        )}
         <Button
           className="w-full"
           onClick={handleBatchFeedback}
