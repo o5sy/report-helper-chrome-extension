@@ -9,6 +9,9 @@ import type {
 } from '@/services/feedback-generator';
 
 import { FeedbackGenerator } from '@/services/feedback-generator';
+import { GeminiClient } from '@/services/gemini-client';
+import { GoogleServiceFactory } from '@/services/google-service-factory';
+import { ReferenceStoreService, SyncResult } from '@/services/reference-store';
 
 export class ApiOrchestrator {
   private answerRefiner?: AnswerRefiner;
@@ -86,6 +89,26 @@ export class ApiOrchestrator {
         errors: [
           error instanceof Error ? error.message : 'Unknown error occurred',
         ],
+      };
+    }
+  }
+
+  async syncReference(urlsText: string): Promise<SyncResult> {
+    try {
+      const geminiApiKey = await this.getGeminiApiKey();
+      if (!geminiApiKey) {
+        return { success: false, error: 'Gemini API key not configured' };
+      }
+
+      const referenceStore = new ReferenceStoreService();
+      const geminiClient = new GeminiClient({ apiKey: geminiApiKey });
+      const sheetsService = GoogleServiceFactory.getSheetsService();
+
+      return await referenceStore.syncFromUrls(urlsText, sheetsService, geminiClient);
+    } catch (error) {
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error occurred',
       };
     }
   }

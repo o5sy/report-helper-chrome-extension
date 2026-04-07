@@ -27,4 +27,14 @@ export interface MessageResponse {
   error?: string;
 }
 
-export type ExtensionMessage = RefineAnswersMessage | GenerateFeedbackMessage;
+export interface SyncReferenceMessage {
+  type: "SYNC_REFERENCE";
+  payload: {
+    urlsText: string;
+  };
+}
+
+export type ExtensionMessage =
+  | RefineAnswersMessage
+  | GenerateFeedbackMessage
+  | SyncReferenceMessage;

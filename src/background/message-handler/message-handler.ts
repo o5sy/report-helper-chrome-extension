@@ -1,4 +1,4 @@
-import { ExtensionMessage, MessageResponse } from "./types";
+import { ExtensionMessage, MessageResponse, SyncReferenceMessage } from "./types";
 
 import { ApiOrchestrator } from "@/background/api-orchestrator";
 
@@ -16,6 +16,8 @@ export class MessageHandler {
           return await this.handleRefineAnswers(message);
         case "GENERATE_FEEDBACK":
           return await this.handleGenerateFeedback(message);
+        case "SYNC_REFERENCE":
+          return await this.handleSyncReference(message);
         default:
           return {
             success: false,
@@ -54,6 +56,26 @@ export class MessageHandler {
         type: "REFINE_ANSWERS_RESPONSE",
         error:
           error instanceof Error ? error.message : "Unknown error occurred",
+      };
+    }
+  }
+
+  private async handleSyncReference(
+    message: SyncReferenceMessage,
+  ): Promise<MessageResponse> {
+    try {
+      const result = await this.apiOrchestrator.syncReference(message.payload.urlsText);
+      return {
+        success: result.success,
+        type: "SYNC_REFERENCE_RESPONSE",
+        data: result,
+        error: result.error,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        type: "SYNC_REFERENCE_RESPONSE",
+        error: error instanceof Error ? error.message : "Unknown error occurred",
       };
     }
   }
